@@ -149,3 +149,5 @@ This tool isn't finished, not for me at least, so I'm planning to do:
 - [ ] Make the classed doc (in the works)
 
 Also I'm planning to make a GUI version of this tool (when I learn how to make GUIs) to be even better! It'll be in another repository tho. I'll update here when I finish it
+
+An icon to the executable is welcome (I'm not a graphic designer D:)
