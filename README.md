@@ -122,10 +122,10 @@ This is a initial commit, the coments are being made!
 
 This tool isn't finished, not for me at least, so I'm planning to do:
 
-1. Implement a better internal repetion handling (in the works)
-2. Better verbosity
-3. Maybe implement FastMD5
-4. Renaming everything to better names (in the works)
-5. Comment the code (in the works)
+- [ ] Implement a better internal repetion handling (in the works)
+- [ ] Better verbosity
+- [ ] Maybe implement FastMD5
+- [ ] Renaming everything to better names (in the works)
+- [ ] Comment the code (in the works)
 
 Also I'm planning to make a GUI version of this tool (when I learn how to make GUIs) to be even better! It'll be in another repository tho. I'll update here when I finish it
