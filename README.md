@@ -72,53 +72,69 @@ Theres a libray in the internet called FastMD5. It's a fast and super optimizade
 ### Users
 
 1. **This will delete repeated files?**
-No, it'll organize it. You choose if you want to delete
+
+   No, it'll organize it. You choose if you want to delete
 
 2. **So how I get rid of duplicates?**
-You can just delete all the subdirectories in `Results` except one (since there's no internal repetion) and rename the files yourself
+
+   You can just delete all the subdirectories in `Results` except one (since there's no internal repetion) and rename the files yourself
 
 3. **There's a way to rename them quickly?**
-You can use my renaming tool (not published yet) that is a tool made to work with this tool, use another tool like Bulk Renaming Utility or a shell script/batch file
+
+   You can use my renaming tool (not published yet) that is a tool made to work with this tool, use another tool like Bulk Renaming Utility or a shell script/batch file
 
 4. **The tools rise an exception/error, what should I do?**
-Read the exception message to see if you can fix yourself. Things like passing something that is not a directory as arguments will raise an exception because there's no verification to see if the argument is a valid directory (yet)
+
+   Read the exception message to see if you can fix yourself. Things like passing something that is not a directory as arguments will raise an exception because there's no verification to see if the argument is a valid directory (yet)
 
 5. **I get acess denied, how I fix it?**
-The tool is probably trying to acess a protected directory (like a system directory or a directory that just a administrator can acess). Run the tool as admin and probably it'll fix it. This exception may appear too if you pass like a file as argument
+
+   The tool is probably trying to acess a protected directory (like a system directory or a directory that just a administrator can acess). Run the tool as admin and probably it'll fix it. This exception may appear too if you pass like a file as argument
 
 6. **My folder aren't togheter in the same parent, can I use a shortcut in one of the parents?**
-No, because the shortcut acts like a file, so it won't work. This may be implemented in the future tho. While, this doesn't happen, you can use the terminal like this: `DuplicateFinder <directory path> <directory path> ...`
+
+   No, because the shortcut acts like a file, so it won't work. This may be implemented in the future tho. While, this doesn't happen, you can use the terminal like this: `DuplicateFinder <directory path> <directory path> ...`
 
 7. **There's a min and a max number of folders to analyse?**
-The min is one, in which it'll just look for internal repetions, the max is designed to be 26, after that the tool will raise an exception (error) or will stop to put letters in the filenames in the 27th and beyond folders
+
+   The min is one, in which it'll just look for internal repetions, the max is designed to be 26, after that the tool will raise an exception (error) or will stop to put letters in the filenames in the 27th and beyond folders
 
 8. **I've found taht something is going wrong, how can I help/get a solution**
-You can always create an Issue to help improve this tool. I just ask you to look at all issues to see if your questions/problem hasn't been answered/solved
+
+   You can always create an Issue to help improve this tool. I just ask you to look at all issues to see if your questions/problem hasn't been answered/solved
 
 ### Other programers
 
 1. **Can I use your code in my project?**
+
 Yes! This code is under the MIT license, so you're free to do anything with the code. You can also fork the repository.
 
 2. **How can I help?**
+
 You can help createing an Issue or a Pull Request, I'll look into it, I promise!
 
 3. **I want to put FastMD5 in the code, where I change?**
+
 The method `calculateMD5()` in the ROM class is responsible to calculate the MD5 hash so any modifications in the hash calculation goes there. The method just change the `String md5` variable to contain the hash. However I don't know how to implement FastMD5, but I may try in the future.
 
 4. **Why not use other hashing algorithm or use multiple ones?**
+
 I choosed MD5 because is relatively colision safe when looking for repeated files and it's fast. There was other alternatives, like SHA-1, that's fast too, but MD5 was good enough. Other hashes like SHA-2 or SHA-3 weren't considered because they're really slow. Other non-security algorithms weren't considered because I didn't know they existed until yesterday :D You can put any hash you want in the code and it'll work. I'm thinking of changing `calculateMD5()` to `calculateHash()` to make the use of other algorithms easier
 
 5. **Why the classes have these names? They don't seen common**
+
 This is because this tool was called Simple ROM Manager and was made to prevent repetions when merging my romsets (I'm archivist of retrogames) so the names, mainly the ROM class, ended up with these names. The tool was repurposed to find repetions in general, since it did that already. I'll change the names in the future
 
 6. **Everything is in the Main class in a weird way, how the code is designed?**
+
 This is because this tool is more like a script, so things went to the Main classes. The code works basically in the constructors, that does almost everything. This is just to be pratic, feel free to change it (and even submmit a Pull Request!)
 
 7. **The code isn't commented, why?**
+
 This is a initial commit, the coments are being made!
 
 8. **Will this tool have a class documanetaion?**
+
 It's in the works!
 
 ## Future plans
