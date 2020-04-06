@@ -31,6 +31,7 @@ public class Directory {
         }
         Collections.sort(roms);
         x++;
+        stream.close();
     }
 
     public Path getPath() {
