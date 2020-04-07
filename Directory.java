@@ -11,7 +11,7 @@ import java.nio.file.Paths;
  * internal and external repetions. To know more info:
  * https://github.com/FlyingWolFox/Duplicate-Finder
  * 
- * @version 0.9.0-2
+ * @version 0.9.0-3
  * @author FlyingWolFox / lips.pissaia@gmail.com
  */
 public class Directory {

@@ -1,4 +1,3 @@
-import java.io.File;
 import java.io.IOException;
 import java.nio.file.DirectoryIteratorException;
 import java.nio.file.Files;
@@ -13,7 +12,7 @@ import java.util.HashMap;
  * folders passed for the constructor and will organize then in the Results
  * folder. To know more info: https://github.com/FlyingWolFox/Duplicate-Finder
  * 
- * @version 0.9.0-2
+ * @version 0.9.0-3
  * @author FlyingWolFox / lips.pissaia@gmail.com
  */
 public class Main {
@@ -21,8 +20,7 @@ public class Main {
 	private ArrayList<FileInfo> files; // where all files will be stored for comparasion
 	private ArrayList<Path> subfolders; // stores the subfolders of the Results folder
 	private ArrayList<Path> internalRepetions; // used in internal repetion handling, this
-										// still in the works
-	private Path results; // stores the Reuslts folder path
+	// still in the works
 	private HashMap<Integer, Character> letters; // used to translate the directory number in a letter to use in the
 													// filenames
 
@@ -51,7 +49,7 @@ public class Main {
 		}
 
 		// creates the Results directory and its subfolders
-		createDirectories(Directory.getX());
+		createDirectories();
 
 		// this should always be true
 		assert subfolders.size() == dirs
@@ -93,13 +91,10 @@ public class Main {
 	 * 
 	 * @param num number of subdirectories to create (maybe not really needed)
 	 */
-	private void createDirectories(int num) {
-		// TODO: use root to get child paths
-		// TODO: check ig param num is necessary
-		Path root = Paths.get("Results"); // holds the Results directory as root for subdirectories
-		this.results = root;
+	private void createDirectories() {
+		Path results = Paths.get("Results"); // holds the Results directory as root for subdirectories
 		try {
-			Files.createDirectories(root); // creates the Results directory
+			Files.createDirectories(results); // creates the Results directory
 		} catch (IOException e) {
 			// not being able to create the Results directory is terminal and the script
 			// mustn't proceed
@@ -108,11 +103,13 @@ public class Main {
 			System.exit(-1);
 		}
 		// will create all the subfolders
-		for (int i = 0; i < num; i++) {
-			Path child = Paths.get("Results" + File.separatorChar + dirs.get(i).getPath().getFileName());
-			this.subfolders.add(child); // add the subdirectory to the collection
+		for (int i = 0; i < Directory.getX(); i++) {
+			// Path child = Paths.get("Results" + File.separatorChar +
+			// dirs.get(i).getPath().getFileName());
+			Path subfolder = results.resolve(dirs.get(i).getPath().getFileName());
+			this.subfolders.add(subfolder); // add the subdirectory to the collection
 			try {
-				Files.createDirectories(child);
+				Files.createDirectories(subfolder);
 			} catch (IOException e) {
 				// a fail to ccreate a sbudirectory is terminal, the script mustn't proceed
 				System.err.println("Error trying to create directory for " + dirs.get(i).getPath().getFileName());
@@ -193,26 +190,18 @@ public class Main {
 				numOfRepetions++;
 				rom1.getDir().increaseNumOfRepetions(); // increases the number of repetion on the folder of the file
 				Path source1 = rom1.getPath(); // gets directory info to move the file
-				Path target1 = subfolders.get(rom1.getDir().getNum()).resolve(
-						rom1.getNum() + letters.get(rom1.getDir().getNum()).toString() + "- " + rom1.getName()); // gets
-																													// the
-																													// respective
-																													// subfolder
-																													// to
-																													// move
-																													// the
-																													// file
-																													// with
-																													// the
-																													// new
-																													// name
+				rom1.setName(rom1.getNum() + letters.get(rom1.getDir().getNum()).toString() + "- " + rom1.getName());
+				Path target1 = subfolders.get(rom1.getDir().getNum()).resolve(rom1.getName()); // gets the respective
+																								// subfolder to move the
+																								// file with the new
+																								// name
 				// continue to look for repetions, this will garant that not just repetion
 				// doubles get spotted
 				while (rom1.compareTo(rom2) == 0) {
 					rom2.getDir().increaseNumOfRepetions();
 					Path source2 = rom2.getPath();
-					Path target2 = subfolders.get(rom2.getDir().getNum()).resolve(
-							rom1.getNum() + letters.get(rom2.getDir().getNum()).toString() + "- " + rom2.getName());
+					rom2.setName(rom1.getNum() + letters.get(rom2.getDir().getNum()).toString() + "- " + rom2.getName());
+					Path target2 = subfolders.get(rom2.getDir().getNum()).resolve(rom2.getName());
 					try {
 						Files.move(source2, target2);
 					} catch (IOException e) {
@@ -242,9 +231,6 @@ public class Main {
 				// removes from the collection, this means that the iteration have to be
 				// subtract one so a start of a group of repetions isn't missed, this may be
 				// unnecessary
-				// TODO: see if it's necesary to remove and move the iteration back
-				files.remove(rom1);
-				i--;
 			}
 		}
 		// prints the statics of the reptions found
@@ -265,13 +251,13 @@ public class Main {
 			if (file.getRepeated()
 					&& file.getFile().getAbsolutePath().equals(file.getPath().toAbsolutePath().toString())) {
 				Path source = file.getPath();
-				Path target = internalRepetions.get(file.getDir().getNum())
-						.resolve(file.getNum() + letters.get(file.getDir().getNum()).toString() + "- " + file.getName());
+				Path target = internalRepetions.get(file.getDir().getNum()).resolve(
+						file.getNum() + letters.get(file.getDir().getNum()).toString() + "- " + file.getName());
 				try {
 					Files.move(source, target);
 				} catch (IOException e) {
-					System.err.println("Failed to move " + file.getName() + " from " + file.getDir().getPath().toString()
-							+ " to " + target.toString());
+					System.err.println("Failed to move " + file.getName() + " from "
+							+ file.getDir().getPath().toString() + " to " + target.toString());
 					e.printStackTrace();
 				}
 			}
