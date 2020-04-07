@@ -15,7 +15,7 @@ import java.nio.file.Paths;
  * @author FlyingWolFox / lips.pissaia@gmail.com
  */
 public class Directory {
-    private ArrayList<FileInfo> roms; // files that are in the folder
+    private ArrayList<FileInfo> files; // files that are in the folder
     private Path path; // path to the directory
     private int num; // dir id
     private static int x; // used to generate dir id
@@ -34,16 +34,16 @@ public class Directory {
     public Directory(String path) throws IOException {
         num = x; // gets dir id
         this.path = Paths.get(path);
-        roms = new ArrayList<FileInfo>();
+        files = new ArrayList<FileInfo>();
         // open the DirectoryStream to get files
         DirectoryStream<Path> stream = Files.newDirectoryStream(Paths.get(path));
         for (Path file : stream) {
             if (!file.toFile().isDirectory()) {
                 System.out.println("Opening: " + file.getFileName());
-                roms.add(new FileInfo(file.toFile(), this));
+                files.add(new FileInfo(file.toFile(), this));
             }
         }
-        Collections.sort(roms); // this sorts the collection based on the hash of each file
+        Collections.sort(files); // this sorts the collection based on the hash of each file
         x++;
         stream.close(); // closes the stream
     }
@@ -59,7 +59,7 @@ public class Directory {
      * @return the ArrayList of files of this dir
      */
     public ArrayList<FileInfo> getFiles() {
-        return roms;
+        return files;
     }
 
     /**
