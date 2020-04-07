@@ -11,11 +11,11 @@ import java.nio.file.Paths;
  * internal and external repetions. To know more info:
  * https://github.com/FlyingWolFox/Duplicate-Finder
  * 
- * @version 0.9.0-1
+ * @version 0.9.0-2
  * @author FlyingWolFox / lips.pissaia@gmail.com
  */
 public class Directory {
-    private ArrayList<ROM> roms; // files that are in the folder
+    private ArrayList<FileInfo> roms; // files that are in the folder
     private Path path; // path to the directory
     private int num; // dir id
     private static int x; // used to generate dir id
@@ -34,13 +34,13 @@ public class Directory {
     public Directory(String path) throws IOException {
         num = x; // gets dir id
         this.path = Paths.get(path);
-        roms = new ArrayList<ROM>();
+        roms = new ArrayList<FileInfo>();
         // open the DirectoryStream to get files
         DirectoryStream<Path> stream = Files.newDirectoryStream(Paths.get(path));
         for (Path file : stream) {
             if (!file.toFile().isDirectory()) {
                 System.out.println("Opening: " + file.getFileName());
-                roms.add(new ROM(file.toFile(), this));
+                roms.add(new FileInfo(file.toFile(), this));
             }
         }
         Collections.sort(roms); // this sorts the collection based on the hash of each file
@@ -58,7 +58,7 @@ public class Directory {
     /**
      * @return the ArrayList of files of this dir
      */
-    public ArrayList<ROM> getROMs() {
+    public ArrayList<FileInfo> getFiles() {
         return roms;
     }
 

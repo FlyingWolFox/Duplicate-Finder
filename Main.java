@@ -13,16 +13,16 @@ import java.util.HashMap;
  * folders passed for the constructor and will organize then in the Results
  * folder. To know more info: https://github.com/FlyingWolFox/Duplicate-Finder
  * 
- * @version 0.9.0-1
+ * @version 0.9.0-2
  * @author FlyingWolFox / lips.pissaia@gmail.com
  */
 public class Main {
 	private ArrayList<Directory> dirs; // where all directories are stored
-	private ArrayList<ROM> roms; // where all files will be stored for comparasion
-	private ArrayList<Path> childs; // stores the subfolders of the Results folder
-	private ArrayList<Path> internals; // used in internal repetion handling, this
+	private ArrayList<FileInfo> files; // where all files will be stored for comparasion
+	private ArrayList<Path> subfolders; // stores the subfolders of the Results folder
+	private ArrayList<Path> internalRepetions; // used in internal repetion handling, this
 										// still in the works
-	private Path root; // stores the Reuslts folder path
+	private Path results; // stores the Reuslts folder path
 	private HashMap<Integer, Character> letters; // used to translate the directory number in a letter to use in the
 													// filenames
 
@@ -33,9 +33,9 @@ public class Main {
 	 */
 	public Main(String[] args) {
 		dirs = new ArrayList<Directory>();
-		roms = new ArrayList<ROM>();
-		childs = new ArrayList<Path>();
-		internals = new ArrayList<Path>(); // not used yet
+		files = new ArrayList<FileInfo>();
+		subfolders = new ArrayList<Path>();
+		internalRepetions = new ArrayList<Path>(); // not used yet
 		letters = new HashMap<Integer, Character>(26);
 		setLetters(); // fills the HashMap
 
@@ -54,7 +54,7 @@ public class Main {
 		createDirectories(Directory.getX());
 
 		// this should always be true
-		assert childs.size() == dirs
+		assert subfolders.size() == dirs
 				.size() : "Error: The number of child directories is not equal to the number of scanned directories";
 
 		// process internal repetions first. At this version this just logs that
@@ -63,9 +63,9 @@ public class Main {
 
 		// will get all files of all directories to make comparisons
 		for (Directory dir : dirs) {
-			roms.addAll(dir.getROMs());
+			files.addAll(dir.getFiles());
 		}
-		Collections.sort(roms); // sort the arraylist accordingly to MD5 hash in alphabetical order
+		Collections.sort(files); // sort the arraylist accordingly to MD5 hash in alphabetical order
 
 		// will be looking for repetions and will organize everything
 		manageRepetions();
@@ -97,7 +97,7 @@ public class Main {
 		// TODO: use root to get child paths
 		// TODO: check ig param num is necessary
 		Path root = Paths.get("Results"); // holds the Results directory as root for subdirectories
-		this.root = root;
+		this.results = root;
 		try {
 			Files.createDirectories(root); // creates the Results directory
 		} catch (IOException e) {
@@ -110,7 +110,7 @@ public class Main {
 		// will create all the subfolders
 		for (int i = 0; i < num; i++) {
 			Path child = Paths.get("Results" + File.separatorChar + dirs.get(i).getPath().getFileName());
-			this.childs.add(child); // add the subdirectory to the collection
+			this.subfolders.add(child); // add the subdirectory to the collection
 			try {
 				Files.createDirectories(child);
 			} catch (IOException e) {
@@ -140,11 +140,11 @@ public class Main {
 		// this flag will change to show internal repetions on the terminal
 		boolean repetion = false;
 		for (int dir = 0; dir < dirs.size(); dir++) {
-			ArrayList<ROM> roms = dirs.get(dir).getROMs();
+			ArrayList<FileInfo> roms = dirs.get(dir).getFiles();
 			// will search for internal repetions
 			for (int i = 0; i < roms.size() - 1; i++) {
-				ROM rom1 = roms.get(i);
-				ROM rom2 = roms.get(i + 1);
+				FileInfo rom1 = roms.get(i);
+				FileInfo rom2 = roms.get(i + 1);
 				if (rom1.compareTo(rom2) == 0) {
 					dirs.get(dir).increaseNumOfInternalRepetions();
 					/*
@@ -186,14 +186,14 @@ public class Main {
 	private void manageRepetions() {
 		int numOfRepetions = 0; // stores the number of repetions of all directories, every repetion found will
 								// increase this
-		for (int i = 0; i < roms.size() - 1; i++) {
-			ROM rom1 = roms.get(i); // get a first file to compare
-			ROM rom2 = roms.get(i + 1); // get a second file to compare
+		for (int i = 0; i < files.size() - 1; i++) {
+			FileInfo rom1 = files.get(i); // get a first file to compare
+			FileInfo rom2 = files.get(i + 1); // get a second file to compare
 			if (rom1.compareTo(rom2) == 0) { // compares the files
 				numOfRepetions++;
 				rom1.getDir().increaseNumOfRepetions(); // increases the number of repetion on the folder of the file
 				Path source1 = rom1.getPath(); // gets directory info to move the file
-				Path target1 = childs.get(rom1.getDir().getNum()).resolve(
+				Path target1 = subfolders.get(rom1.getDir().getNum()).resolve(
 						rom1.getNum() + letters.get(rom1.getDir().getNum()).toString() + "- " + rom1.getName()); // gets
 																													// the
 																													// respective
@@ -211,7 +211,7 @@ public class Main {
 				while (rom1.compareTo(rom2) == 0) {
 					rom2.getDir().increaseNumOfRepetions();
 					Path source2 = rom2.getPath();
-					Path target2 = childs.get(rom2.getDir().getNum()).resolve(
+					Path target2 = subfolders.get(rom2.getDir().getNum()).resolve(
 							rom1.getNum() + letters.get(rom2.getDir().getNum()).toString() + "- " + rom2.getName());
 					try {
 						Files.move(source2, target2);
@@ -221,10 +221,10 @@ public class Main {
 						e.printStackTrace();
 					}
 
-					roms.remove(rom2); // remove the file of the collection, so comparasion can proceed without getting
+					files.remove(rom2); // remove the file of the collection, so comparasion can proceed without getting
 										// a integer iterator
 					try {
-						rom2 = roms.get(i + 1);
+						rom2 = files.get(i + 1);
 					} catch (IndexOutOfBoundsException e) {
 						// if this happens, the end of the collection have been reached
 						break;
@@ -243,7 +243,7 @@ public class Main {
 				// subtract one so a start of a group of repetions isn't missed, this may be
 				// unnecessary
 				// TODO: see if it's necesary to remove and move the iteration back
-				roms.remove(rom1);
+				files.remove(rom1);
 				i--;
 			}
 		}
@@ -261,26 +261,26 @@ public class Main {
 	 * internal repetions aren't handled seperetedly
 	 */
 	public void moveRepeated() {
-		for (ROM rom : roms) {
-			if (rom.getRepeated()
-					&& rom.getFile().getAbsolutePath().equals(rom.getPath().toAbsolutePath().toString())) {
-				Path source = rom.getPath();
-				Path target = internals.get(rom.getDir().getNum())
-						.resolve(rom.getNum() + letters.get(rom.getDir().getNum()).toString() + "- " + rom.getName());
+		for (FileInfo file : files) {
+			if (file.getRepeated()
+					&& file.getFile().getAbsolutePath().equals(file.getPath().toAbsolutePath().toString())) {
+				Path source = file.getPath();
+				Path target = internalRepetions.get(file.getDir().getNum())
+						.resolve(file.getNum() + letters.get(file.getDir().getNum()).toString() + "- " + file.getName());
 				try {
 					Files.move(source, target);
 				} catch (IOException e) {
-					System.err.println("Failed to move " + rom.getName() + " from " + rom.getDir().getPath().toString()
+					System.err.println("Failed to move " + file.getName() + " from " + file.getDir().getPath().toString()
 							+ " to " + target.toString());
 					e.printStackTrace();
 				}
 			}
-			if (rom.getRepeated()
-					&& !rom.getFile().getAbsolutePath().equals(rom.getPath().toAbsolutePath().toString())) {
-				System.out.println(rom.getName() + " from " + rom.getDir().getPath().toString()
+			if (file.getRepeated()
+					&& !file.getFile().getAbsolutePath().equals(file.getPath().toAbsolutePath().toString())) {
+				System.out.println(file.getName() + " from " + file.getDir().getPath().toString()
 						+ " was among internal repetions, but it was found among repetions with other directories, "
 						+ "so it isn't with the internal repetions of its directory, but in the "
-						+ rom.getDir().getPath().toFile().getName() + " directory in the results directory");
+						+ file.getDir().getPath().toFile().getName() + " directory in the results directory");
 			}
 		}
 	}

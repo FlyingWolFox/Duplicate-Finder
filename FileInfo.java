@@ -10,10 +10,10 @@ import java.security.NoSuchAlgorithmException;
  * This class holds file information. The name is subject to change. To know
  * more info: https://github.com/FlyingWolFox/Duplicate-Finder
  * 
- * @version 0.9.0-1
+ * @version 0.9.0-2
  * @author FlyingWolFox / lips.pissaia@gmail.com
  */
-public class ROM implements Comparable<ROM> {
+public class FileInfo implements Comparable<FileInfo> {
 	private File file; // file information
 	private String name; // filename
 	private Path path; // file path
@@ -33,7 +33,7 @@ public class ROM implements Comparable<ROM> {
 	 * @param file // the file
 	 * @param dir  // the directory it's in
 	 */
-	public ROM(File file, Directory dir) {
+	public FileInfo(File file, Directory dir) {
 		this.file = file;
 		this.path = file.toPath();
 		this.num = y;
@@ -148,7 +148,7 @@ public class ROM implements Comparable<ROM> {
 	/**
 	 * Used to compare files to find repetions
 	 */
-	public int compareTo(ROM rom) {
+	public int compareTo(FileInfo rom) {
 		return md5.compareTo(rom.getMD5());
 	}
 
