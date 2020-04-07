@@ -7,8 +7,8 @@ import java.security.MessageDigest;
 import java.security.NoSuchAlgorithmException;
 
 /**
- * This class holds file information. The name is subject to change. To know
- * more info: https://github.com/FlyingWolFox/Duplicate-Finder
+ * This class holds file information. To know more info:
+ * https://github.com/FlyingWolFox/Duplicate-Finder
  * 
  * @version 0.9.0-3
  * @author FlyingWolFox / lips.pissaia@gmail.com
