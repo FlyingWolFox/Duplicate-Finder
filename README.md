@@ -143,8 +143,8 @@ This tool isn't finished, not for me at least, so I'm planning to do:
 
 - [ ] Implement a better internal repetion handling (in the works)
 - [ ] Better verbosity
-- [ x ] Renaming everything to better names
-- [ x ] Comment the code
-- [ x ] Make the classes doc
+- [x] Renaming everything to better names
+- [x] Comment the code
+- [x] Make the classes doc
 
 Also I'm planning to make a GUI version of this tool (when I learn how to make GUIs) to be even better! It'll be in another repository tho. I'll update here when I finish it
