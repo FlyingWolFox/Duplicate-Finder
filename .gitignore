@@ -24,3 +24,4 @@ hs_err_pid*
 DuplicateFinder.exe
 package.bluej
 *.lnk
+.vscode/launch.json
