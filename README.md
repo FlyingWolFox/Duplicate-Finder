@@ -29,7 +29,7 @@ If you dragged and dropped in the executable, the directory is where you selecte
 The `Results` directory will have a number of subdriectories in it, the same number of directories you selected to analyse. Each subdirectory contains the repetions of each folder analysed, having the same name of it. The files are renamed to facilitate user interaction. Each file is renamed following these rules:
   - 1. The file start with a number, this number is a identification of which group of repetions it's part of. For example, all files that start with the number 48 have the same content
   - 2. After the number comes a letter, which range from `a` to `z` and represent the directory that they came. For example, if you passed ./Dir1/ and ./Dir2/, in this order, the files in ./Results/Dir1/ will all have the letter `a` after the number, and ./Results/Dir2 will all have the letter `b` after the number. This is for identification purposes, if you want to merge all directories to compare files. Here lies the limit of this tool, only support a max of 26 directories, after that, or there will be no letters, or a exception will raise with the HashMap
-  - 3. After the lettter comes a dash (`-`) and a blank space. This is to preserve the file name and make easy to rename the files after (that you can use my renamer tool here (not published yet) or something like Bulk Renamer Utility)
+  - 3. After the lettter comes a dash (`-`) and a blank space. This is to preserve the file name and make easy to rename the files after (that you can use my [renamer tool for this script](https://github.com/FlyingWolFox/Duplicate-Finder-Renamer/) or something like Bulk Renamer Utility)
   - 4. Then comes the file name and extension, preserving the original name, but I'm not sure about symbolic links
 
 PS: Intenal repetions are put in the same folder, with the same number and letter, making it easy to manage. This will change in a future version
@@ -42,7 +42,7 @@ First the tool get all files in the folders passed by argument, creating Directo
 
 This tool uses MD5 hash to verify if files are equal and uses these imported classes:
 
-```Java
+```java
 java.io.File; // File handling
 java.io.IOException; // IOException Handling
 java.nio.file.DirectoryIteratorException; // Directory Handling exception
@@ -60,7 +60,7 @@ java.nio.file.DirectoryIteratorException; // Exception in directory handling
 java.nio.file.DirectoryStream; // Used to get files in the folders
 ```
 
-Not all of these are available in all Java versions, like Java ME.
+Not all of these are available in all Java versions, like Java ME or old version of Java.
 PS: The hash calculations were optimized after Java 7, so they run much faster
 
 ## About FastMD5
@@ -81,7 +81,7 @@ Theres a libray in the internet called FastMD5. It's a fast and super optimizade
 
 3. **There's a way to rename them quickly?**
 
-   You can use my renaming tool (not published yet) that is a tool made to work with this tool, use another tool like Bulk Renaming Utility or a shell script/batch file
+   You can use my [renamer tool here](https://github.com/FlyingWolFox/Duplicate-Finder-Renamer/)) that is made to work with this tool, use another tool like Bulk Renaming Utility or a shell script/batch file
 
 4. **The tools rise an exception/error, what should I do?**
 
@@ -121,21 +121,21 @@ The method `calculateMD5()` in the ROM class is responsible to calculate the MD5
 
 I choosed MD5 because is relatively colision safe when looking for repeated files and it's fast. There was other alternatives, like SHA-1, that's fast too, but MD5 was good enough. Other hashes like SHA-2 or SHA-3 weren't considered because they're really slow. Other non-security algorithms weren't considered because I didn't know they existed until yesterday :D You can put any hash you want in the code and it'll work. I'm thinking of changing `calculateMD5()` to `calculateHash()` to make the use of other algorithms easier
 
-5. **Why the classes have these names? They don't seen common**
+5. **[OLD] Why the classes have these names? They don't seen common**
 
-This is because this tool was called Simple ROM Manager and was made to prevent repetions when merging my romsets (I'm archivist of retrogames) so the names, mainly the ROM class, ended up with these names. The tool was repurposed to find repetions in general, since it did that already. I'll change the names in the future
+This is because this tool was called Simple ROM Manager and was made to prevent repetions when merging my romsets (I'm archivist of retrogames) so the names, mainly the ROM class, ended up with these names. The tool was repurposed to find repetions in general, since it did that already. The names were changed in v0.9.0-3, this question will be maintened here because old commits still have the old names
 
 6. **Everything is in the Main class in a weird way, how the code is designed?**
 
 This is because this tool is more like a script, so things went to the Main classes. The code works basically in the constructors, that does almost everything. This is just to be pratic, feel free to change it (and even submmit a Pull Request!)
 
-7. **The code isn't commented, why?**
+7. **The code is commented?**
 
-This is a initial commit, the coments are being made!
+Yes! Basically everything is commented. They're added in v0.9.0-2
 
-8. **Will this tool have a class documanetaion?**
+8. **This tool have a class documention?**
 
-It's in the works!
+Yes.
 
 ## Future plans
 
