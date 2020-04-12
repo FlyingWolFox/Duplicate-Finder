@@ -19,8 +19,6 @@ public class Main {
 	private ArrayList<Directory> dirs; // where all directories are stored
 	private ArrayList<FileInfo> files; // where all files will be stored for comparasion
 	private ArrayList<Path> subfolders; // stores the subfolders of the Results folder
-	private ArrayList<Path> internalRepetions; // used in internal repetion handling, this
-	// still in the works
 	private HashMap<Integer, Character> letters; // used to translate the directory number in a letter to use in the
 													// filenames
 
@@ -33,7 +31,6 @@ public class Main {
 		dirs = new ArrayList<Directory>();
 		files = new ArrayList<FileInfo>();
 		subfolders = new ArrayList<Path>();
-		internalRepetions = new ArrayList<Path>(); // not used yet
 		letters = new HashMap<Integer, Character>(26);
 		setLetters(); // fills the HashMap
 

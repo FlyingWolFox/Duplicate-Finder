@@ -60,7 +60,7 @@ Theres a libray in the internet called FastMD5. It's a fast and super optimizade
 
 3. **There's a way to rename them quickly?**
 
-   You can use my [renamer tool here](https://github.com/FlyingWolFox/Duplicate-Finder-Renamer/)) that is made to work with this tool, use another tool like Bulk Renaming Utility or a shell script/batch file
+   You can use my [renamer tool here](https://github.com/FlyingWolFox/Duplicate-Finder-Renamer/) that is made to work with this tool, use another tool like Bulk Renaming Utility or a shell script/batch file
 
 4. **The tools rise an exception/error, what should I do?**
 
@@ -94,11 +94,11 @@ You can help createing an Issue or a Pull Request, I'll look into it, I promise!
 
 3. **I want to put FastMD5 in the code, where I change?**
 
-The method `calculateMD5()` in the ROM class is responsible to calculate the MD5 hash so any modifications in the hash calculation goes there. The method just change the `String md5` variable to contain the hash. However I don't know how to implement FastMD5, but I may try in the future.
+The method `calculateHash()` in the FileInfo class is responsible to calculate the hash so any modifications in the hash calculation goes there. The method changes the `String hash` variable to contain the hash.
 
 4. **Why not use other hashing algorithm or use multiple ones?**
 
-I choosed MD5 because is relatively colision safe when looking for repeated files and it's fast. There was other alternatives, like SHA-1, that's fast too, but MD5 was good enough. Other hashes like SHA-2 or SHA-3 weren't considered because they're really slow. Other non-security algorithms weren't considered because I didn't know they existed until yesterday :D You can put any hash you want in the code and it'll work. I'm thinking of changing `calculateMD5()` to `calculateHash()` to make the use of other algorithms easier
+I choosed MD5 because is relatively colision safe when looking for repeated files and it's fast. There was other alternatives, like SHA-1, that's fast too, but MD5 was good enough. Other hashes like SHA-2 or SHA-3 weren't considered because they're really slow. Other non-security algorithms weren't considered because I didn't know they existed until sometime ago :D You can put any hash you want in the code and it'll work.
 
 5. **Everything is in the Main class in a weird way, how the code is designed?**
 
@@ -106,9 +106,4 @@ This is because this tool is more like a script, so things went to the Main clas
 
 ## Future plans
 
-This tool isn't finished, not for me at least, so I'm planning to do:
-
-- [ ] Implement a compressed archived comparer
-- [ ] Better verbosity
-
-Also I'm planning to make a GUI version of this tool (when I learn how to make GUIs) to be even better! It'll be in another repository tho. I'll update here when I finish it
+I'm planning to make a GUI version of this tool (when I learn how to make GUIs) to be even better! It'll be in another repository tho. I'll update here when I finish it
