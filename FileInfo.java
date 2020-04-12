@@ -147,8 +147,8 @@ public class FileInfo implements Comparable<FileInfo> {
 	/**
 	 * Used to compare files to find repetions
 	 */
-	public int compareTo(FileInfo rom) {
-		return md5.compareTo(rom.getMD5());
+	public int compareTo(FileInfo file) {
+		return md5.compareTo(file.getMD5());
 	}
 
 }

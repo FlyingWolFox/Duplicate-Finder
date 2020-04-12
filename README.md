@@ -10,7 +10,7 @@ This tool uses the terminal to operate and the windows executable is wrapped by 
 * Using the .class or .jar:
 
   - Call the Main class and pass the directories that you want to analyze as arguments. The tool, for now, ignores subdirectories. The tool will print in the terminal what files it's analizing and, after done, will print the results:
-    - 1. Internal repetions: Internal repetions are files that have a equal copy in the same directory that they're in. The tool will show if it found at least a repetion and, if it does, will print how many are in each. For now, internal repetions aren't handled separately and will be togheter with other repetions.
+    - 1. Internal repetions: Internal repetions are files that have a equal copy in the same directory that they're in. The tool will show if it found at least a repetion and, if it does, will print how many are in each and end execution. You'll have to handle them yourself and then re-run the script.
     - 2. Repetions: Here enters repetions among directories. The tool will print how many repetions were found on each directory.
     - 3. The tool will print `Operation Complete` after the execution. If any exceptions are raised while handling, the description of the error will be printed with the stack trace.
 
@@ -32,7 +32,7 @@ The `Results` directory will have a number of subdriectories in it, the same num
   - 3. After the lettter comes a dash (`-`) and a blank space. This is to preserve the file name and make easy to rename the files after (that you can use my [renamer tool for this script](https://github.com/FlyingWolFox/Duplicate-Finder-Renamer/) or something like Bulk Renamer Utility)
   - 4. Then comes the file name and extension, preserving the original name, but I'm not sure about symbolic links
 
-PS: Intenal repetions are put in the same folder, with the same number and letter, making it easy to manage. This will change in a future version
+PS: Intenal repetions are handle first. If the tool finds, it won't look for repetions among directories. Internal repetions are put in the subfolder which they're found. Manage them first, them re-run the tool to look for repetions among directories
 
 ### How it works
 
@@ -40,28 +40,7 @@ First the tool get all files in the folders passed by argument, creating Directo
 
 ## About the code
 
-This tool uses MD5 hash to verify if files are equal and uses these imported classes:
-
-```java
-java.io.File; // File handling
-java.io.IOException; // IOException Handling
-java.nio.file.DirectoryIteratorException; // Directory Handling exception
-java.nio.file.Files; // Path hadling and used to move files
-java.nio.file.Path; // File and directory handling
-java.nio.file.Paths; // File and directory handling
-java.util.ArrayList; // Used in file comparation
-java.util.Collections; // Used in file comparation
-java.util.HashMap; // Used to put letters after the number in each filename
-java.io.FileInputStream; // Used to calculate MD5 hash
-java.io.InputStream; // Used to calculate MD5 hash
-java.security.MessageDigest; // Used to calculate MD5 hash
-java.security.NoSuchAlgorithmException; // Exception in hash calculation
-java.nio.file.DirectoryIteratorException; // Exception in directory handling
-java.nio.file.DirectoryStream; // Used to get files in the folders
-```
-
-Not all of these are available in all Java versions, like Java ME or old version of Java.
-PS: The hash calculations were optimized after Java 7, so they run much faster
+This tool uses MD5 hash to verify if files are equal and uses `java.nio` and `java.security`. Not all of these are available in all Java versions, like Java ME or old version of Java. PS: The hash calculations were optimized after Java 7, so they run much faster
 
 ## About FastMD5
 
@@ -121,30 +100,15 @@ The method `calculateMD5()` in the ROM class is responsible to calculate the MD5
 
 I choosed MD5 because is relatively colision safe when looking for repeated files and it's fast. There was other alternatives, like SHA-1, that's fast too, but MD5 was good enough. Other hashes like SHA-2 or SHA-3 weren't considered because they're really slow. Other non-security algorithms weren't considered because I didn't know they existed until yesterday :D You can put any hash you want in the code and it'll work. I'm thinking of changing `calculateMD5()` to `calculateHash()` to make the use of other algorithms easier
 
-5. **[OLD] Why the classes have these names? They don't seen common**
-
-This is because this tool was called Simple ROM Manager and was made to prevent repetions when merging my romsets (I'm archivist of retrogames) so the names, mainly the ROM class, ended up with these names. The tool was repurposed to find repetions in general, since it did that already. The names were changed in v0.9.0-3, this question will be maintened here because old commits still have the old names
-
-6. **Everything is in the Main class in a weird way, how the code is designed?**
+5. **Everything is in the Main class in a weird way, how the code is designed?**
 
 This is because this tool is more like a script, so things went to the Main classes. The code works basically in the constructors, that does almost everything. This is just to be pratic, feel free to change it (and even submmit a Pull Request!)
-
-7. **The code is commented?**
-
-Yes! Basically everything is commented. They're added in v0.9.0-2
-
-8. **This tool have a class documention?**
-
-Yes.
 
 ## Future plans
 
 This tool isn't finished, not for me at least, so I'm planning to do:
 
-- [ ] Implement a better internal repetion handling (in the works)
+- [ ] Implement a compressed archived comparer
 - [ ] Better verbosity
-- [x] Renaming everything to better names
-- [x] Comment the code
-- [x] Make the classes doc
 
 Also I'm planning to make a GUI version of this tool (when I learn how to make GUIs) to be even better! It'll be in another repository tho. I'll update here when I finish it
