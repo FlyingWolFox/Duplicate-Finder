@@ -106,9 +106,4 @@ This is because this tool is more like a script, so things went to the Main clas
 
 ## Future plans
 
-This tool isn't finished, not for me at least, so I'm planning to do:
-
-- [ ] Implement a compressed archived comparer
-- [ ] Better verbosity
-
-Also I'm planning to make a GUI version of this tool (when I learn how to make GUIs) to be even better! It'll be in another repository tho. I'll update here when I finish it
+I'm planning to make a GUI version of this tool (when I learn how to make GUIs) to be even better! It'll be in another repository tho. I'll update here when I finish it
