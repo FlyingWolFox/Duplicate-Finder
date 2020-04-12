@@ -17,7 +17,7 @@ public class FileInfo implements Comparable<FileInfo> {
 	private File file; // file information
 	private String name; // filename
 	private Path path; // file path
-	private String md5; // md5 hash
+	private String hash;
 	private Directory dir; // directory that the file is in
 	private int num; // the file id in this directory
 	private boolean repeated; // flag to be used in internal repetion handling
@@ -40,16 +40,16 @@ public class FileInfo implements Comparable<FileInfo> {
 		this.dir = dir;
 		this.name = file.getName();
 		try {
-			calculateMD5();
+			calculateHash();
 		} catch (NoSuchAlgorithmException | IOException e) {
 			e.printStackTrace();
 		}
 		y++;
-		System.out.println("	MD5: " + md5);
+		System.out.println("	MD5: " + hash);
 	}
 
 	// calculates the md5 hash of this file
-	public void calculateMD5() throws NoSuchAlgorithmException, IOException {
+	public void calculateHash() throws NoSuchAlgorithmException, IOException {
 		InputStream fis = new FileInputStream(path.toString());
 
 		byte[] buffer = new byte[1024];
@@ -75,7 +75,7 @@ public class FileInfo implements Comparable<FileInfo> {
 			sb.append(Integer.toString((digest[i] & 0xff) + 0x100, 16).substring(1));
 		}
 
-		md5 = sb.toString();
+		hash = sb.toString();
 	}
 
 	/**
@@ -95,8 +95,8 @@ public class FileInfo implements Comparable<FileInfo> {
 	/**
 	 * @return the md5 hash of this file
 	 */
-	public String getMD5() {
-		return this.md5;
+	public String getHash() {
+		return this.hash;
 	}
 
 	/**
@@ -148,7 +148,7 @@ public class FileInfo implements Comparable<FileInfo> {
 	 * Used to compare files to find repetions
 	 */
 	public int compareTo(FileInfo file) {
-		return md5.compareTo(file.getMD5());
+		return hash.compareTo(file.getHash());
 	}
 
 }
