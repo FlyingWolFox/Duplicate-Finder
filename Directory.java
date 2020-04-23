@@ -16,6 +16,7 @@ import java.nio.file.Paths;
  */
 public class Directory {
     private ArrayList<FileInfo> files; // files that are in the folder
+    private ArrayList<Archive> archives;
     private Path path; // path to the directory
     private int num; // dir id
     private static int x; // used to generate dir id
@@ -35,15 +36,21 @@ public class Directory {
         num = x; // gets dir id
         this.path = Paths.get(path);
         files = new ArrayList<FileInfo>();
+        archives = new ArrayList<Archive>();
         // open the DirectoryStream to get files
         DirectoryStream<Path> stream = Files.newDirectoryStream(Paths.get(path));
         for (Path file : stream) {
             if (!file.toFile().isDirectory()) {
                 System.out.println("Opening: " + file.getFileName());
-                files.add(new FileInfo(file.toFile(), this));
+                if (Archive.isArchive(file.getFileName().toString())) {
+                    archives.add(new Archive(file.toFile(), this));
+                }
+                else
+                    files.add(new FileInfo(file.toFile(), this));
             }
         }
         Collections.sort(files); // this sorts the collection based on the hash of each file
+        Collections.sort(archives, archives.get(0).new ArchiveComparator());
         x++;
         stream.close(); // closes the stream
     }
@@ -60,6 +67,13 @@ public class Directory {
      */
     public ArrayList<FileInfo> getFiles() {
         return files;
+    }
+
+    /**
+     * @return ArrayList of archives of this dir
+     */
+    public ArrayList<Archive> getArchives() {
+        return archives;
     }
 
     /**

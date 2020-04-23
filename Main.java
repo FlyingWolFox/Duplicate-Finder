@@ -32,6 +32,7 @@ public class Main {
 		files = new ArrayList<FileInfo>();
 		subfolders = new ArrayList<Path>();
 		letters = new HashMap<Integer, Character>(26);
+		boolean internalRepetion = false;
 		setLetters(); // fills the HashMap
 
 		// creates Directory objects to hold directory information
@@ -52,32 +53,39 @@ public class Main {
 		assert subfolders.size() == dirs
 				.size() : "Error: The number of subdirectories is not equal to the number of scanned directories";
 
-		// process internal repetions first. At this version this just logs that
-		// repetions have been found
-		if (manageInternalRepetions()) {
+		// process internal repetions first
+		internalRepetion |= manageInternalRepetions();
+		internalRepetion |= manageIntenalArchiveRepetions();
+		if (internalRepetion) {
 			System.out.println("Internal repetions found:");
 			for (Directory dir : dirs) {
 				System.out.println(
 						dir.getNumOfInternalRepetions() + " internal repetions in " + dir.getPath().toString());
 			}
-			System.out.println(
-					"Internal are in their respective directories. Clean then first then run the tool again");
+			System.out
+					.println("Internal are in their respective directories. Clean then first then run the tool again");
 			return;
 		} else
 			System.out.println("No internal repetions found");
 		System.out.println("");
 
 		// will get all files of all directories to make comparisons
-		for (
-
-		Directory dir : dirs) {
+		for (Directory dir : dirs) {
 			files.addAll(dir.getFiles());
 		}
 		Collections.sort(files); // sort the arraylist accordingly to MD5 hash in alphabetical order
 
 		// will be looking for repetions and will organize everything
-		manageRepetions();
-		// moveRepeated(); deactivated, useless for now
+		int numOfRepetions = 0;
+		numOfRepetions += manageRepetions();
+		numOfRepetions += manageArchiveRepetions();
+		
+		// prints the statics of the reptions found
+		System.out.println(numOfRepetions + " repetions found:");
+		for (Directory dir : dirs) {
+			System.out.println(dir.getNumOfRepetions() + " files in " + dir.getPath().toString());
+		}
+		System.out.println("");
 
 		System.out.println("Operation Complete");
 
@@ -192,7 +200,7 @@ public class Main {
 	 * more files have the same hash, they'll be togheter, using this, organization
 	 * is also easier
 	 */
-	private void manageRepetions() {
+	private int manageRepetions() {
 		int numOfRepetions = 0; // stores the number of repetions of all directories, every repetion found will
 								// increase this
 		for (int i = 0; i < files.size() - 1; i++) {
@@ -249,13 +257,119 @@ public class Main {
 				// unnecessary
 			}
 		}
-		// prints the statics of the reptions found
-		System.out.println(numOfRepetions + " repetions found:");
-		for (Directory dir : dirs) {
-			System.out.println(dir.getNumOfRepetions() + " files in " + dir.getPath().toString());
-		}
-		System.out.println("");
+		return numOfRepetions;
+	}
 
+	public boolean manageIntenalArchiveRepetions() {
+		boolean internalRepetionFound = false;
+		for (Directory dir : dirs) {
+			ArrayList<Archive> archives = dir.getArchives();
+			if (archives.size() == 0)
+				break;
+			Archive.ArchiveComparator c = archives.get(0).new ArchiveComparator();
+			String letter = letters.get(dir.getNum()).toString();
+			for (int i = 0; i < archives.size() - 1; i++) {
+				Archive archive1 = archives.get(i);
+				Archive archive2 = archives.get(i + 1);
+				if (c.compare(archive1, archive2) == 0) {
+					internalRepetionFound = true;
+					Path source1 = archive1.getPath();
+					archive1.setName(archive1.getNum() + letter + "- " + archive1.getName());
+					Path target1 = subfolders.get(dirs.indexOf(dir)).resolve(archive1.getName());
+					
+					while(c.compare(archive1, archive2) == 0) {						
+						dir.increaseNumOfInternalRepetions();
+						Path source2 = archive2.getPath();
+						archive2.setName(archive1.getNum() + letter + "- " + archive2.getName());
+						Path target2 = subfolders.get(dirs.indexOf(dir)).resolve(archive2.getName());
+						
+						try {
+							Files.move(source2, target2);
+						} catch (IOException e) {
+							System.out.println(
+									"Error moving " + source2.toString() + " to " + target2.toString() + ": " + e);
+						} finally {
+							archives.remove(archive2);
+						}
+
+						try {
+							archive2 = archives.get(i + 1);
+						} catch (IndexOutOfBoundsException e) {
+							// if this happens, the end of the collection have been reached
+							break;
+						}
+					}
+
+					try {
+						Files.move(source1, target1);
+					} catch (IOException e) {
+						System.out.println("Error moving " + source1.toString() + " to " + target1.toString() + ": " + e);
+					}
+				}
+			}
+			
+		}
+
+		return internalRepetionFound;
+	}
+
+	private int manageArchiveRepetions() {
+		int numOfRepetions = 0;
+		ArrayList<Archive> archives = new ArrayList<Archive>();
+		for (Directory dir : dirs) {
+			archives.addAll(dir.getArchives());
+		}
+		if (archives.size() == 0) 
+			return 0;
+		Archive.ArchiveComparator c = archives.get(0).new ArchiveComparator();
+		Collections.sort(archives, c);
+
+		for (int i = 0; i < archives.size() - 1; i++) {
+			Archive archive1 = archives.get(i);
+			Archive archive2 = archives.get(i + 1);
+			if(c.compare(archive1, archive2) == 0) {
+				numOfRepetions++;
+				archive1.getDir().increaseNumOfRepetions();
+				archive2.getDir().increaseNumOfRepetions();
+				Path source1 = archive1.getPath();
+				archive1.setName(archive1.getNum() + letters.get(archive1.getDir().getNum()).toString() + "- " + archive1.getName());
+				Path target1 = subfolders.get(archive1.getDir().getNum()).resolve(archive1.getName()); 
+
+				while (c.compare(archive1, archive2) == 0) {
+					archive2.getDir().increaseNumOfInternalRepetions();
+					Path source2 = archive2.getPath();
+					archive2.setName(archive1.getNum() + letters.get(archive2.getDir().getNum()).toString() + "- " + archive2.getName());
+					Path target2 = subfolders.get(archive2.getDir().getNum()).resolve(archive2.getName());
+					try {
+						Files.move(source2, target2);
+					} catch (IOException e) {
+						System.err.println("Failed to move " + archive2.getName() + " from "
+								+ archive2.getDir().getPath().toString() + " to " + target2.toString());
+						e.printStackTrace();
+					}
+
+					archives.remove(archive2); // remove the file of the collection, so comparasion can proceed without
+											// getting
+											// a integer iterator
+					try {
+						archive2 = archives.get(i + 1);
+					} catch (IndexOutOfBoundsException e) {
+						// if this happens, the end of the collection have been reached
+						break;
+					}
+				}
+
+				try {
+					// finally moves the file used to compare with proper naming
+					Files.move(source1, target1);
+				} catch (IOException e) {
+					System.err.println("Failed to move " + archive1.getName() + " from "
+							+ archive1.getDir().getPath().toString() + " to " + target1.toString());
+					e.printStackTrace();
+				}
+			}
+		}
+		return numOfRepetions;
 	}
 
 	/**

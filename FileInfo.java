@@ -45,7 +45,7 @@ public class FileInfo implements Comparable<FileInfo> {
 			e.printStackTrace();
 		}
 		y++;
-		System.out.println("	MD5: " + hash);
+		System.out.println("    MD5: " + hash);
 	}
 
 	// calculates the md5 hash of this file
@@ -70,12 +70,16 @@ public class FileInfo implements Comparable<FileInfo> {
 
 		// This bytes[] has bytes in decimal format;
 		// Convert it to hexadecimal format
+		hash = getStringHash(digest);
+	}
+
+	public static String getStringHash(byte[] digest) {
 		StringBuilder sb = new StringBuilder();
 		for (int i = 0; i < digest.length; i++) {
 			sb.append(Integer.toString((digest[i] & 0xff) + 0x100, 16).substring(1));
 		}
 
-		hash = sb.toString();
+		return sb.toString();
 	}
 
 	/**
