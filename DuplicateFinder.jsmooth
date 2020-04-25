@@ -1,7 +1,15 @@
 <?xml version="1.0" encoding="ISO-8859-1"?>
 <jsmoothproject>
+<JVMSearchPath>registry</JVMSearchPath>
+<JVMSearchPath>javahome</JVMSearchPath>
+<JVMSearchPath>jrepath</JVMSearchPath>
+<JVMSearchPath>jdkpath</JVMSearchPath>
+<JVMSearchPath>exepath</JVMSearchPath>
+<JVMSearchPath>jview</JVMSearchPath>
 <arguments></arguments>
 <classPath>.</classPath>
+<classPath>7-Zip-JBinding\sevenzipjbinding.jar</classPath>
+<classPath>7-Zip-JBinding\sevenzipjbinding-AllPlatforms.jar</classPath>
 <embeddedJar>false</embeddedJar>
 <executableName>DuplicateFinder.exe</executableName>
 <initialMemoryHeap>-1</initialMemoryHeap>

@@ -20,7 +20,6 @@ public class FileInfo implements Comparable<FileInfo> {
 	private String hash;
 	private Directory dir; // directory that the file is in
 	private int num; // the file id in this directory
-	private boolean repeated; // flag to be used in internal repetion handling
 	private static int y; // used to generate file ids
 
 	static {
@@ -103,6 +102,12 @@ public class FileInfo implements Comparable<FileInfo> {
 		return this.hash;
 	}
 
+	
+	protected void setHash(String hash) {
+		if (this.hash.length() == hash.length()) 
+			this.hash = hash;
+	}
+
 	/**
 	 * @return the directory of this file
 	 */
@@ -131,20 +136,6 @@ public class FileInfo implements Comparable<FileInfo> {
 	 */
 	public int getNum() {
 		return num;
-	}
-
-	/**
-	 * @return if the file is part of internal repetions
-	 */
-	public boolean getRepeated() {
-		return repeated;
-	}
-
-	/**
-	 * Set that this file is part of internal repetions
-	 */
-	public void setRepeated() {
-		this.repeated = true;
 	}
 
 	@Override

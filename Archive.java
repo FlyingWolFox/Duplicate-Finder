@@ -166,6 +166,17 @@ public class Archive extends FileInfo {
         return this.hashes.equals(archive.hashes);
     }
 
+    public boolean hasSingleFile() {
+        if (hashes.size() == 1) {
+            return true;
+        }
+        return false;
+    }
+
+    public void getHashFromFile() {
+        setHash(hashes.get(0));
+    }
+
     class ArchiveComparator implements Comparator<Archive> {
         @Override
         public int compare(Archive archive1, Archive archive2) {

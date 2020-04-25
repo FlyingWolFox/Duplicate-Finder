@@ -1,5 +1,6 @@
 import java.util.ArrayList;
 import java.util.Collections;
+import java.util.Iterator;
 import java.io.IOException;
 import java.nio.file.DirectoryStream;
 import java.nio.file.Files;
@@ -49,10 +50,32 @@ public class Directory {
                     files.add(new FileInfo(file.toFile(), this));
             }
         }
+        trasnformSingleFileArchives();
         Collections.sort(files); // this sorts the collection based on the hash of each file
-        Collections.sort(archives, archives.get(0).new ArchiveComparator());
+        if (archives.size() != 0)
+            Collections.sort(archives, archives.get(0).new ArchiveComparator());
         x++;
         stream.close(); // closes the stream
+    }
+
+    public void trasnformSingleFileArchives() {
+        // Using iterator to avoid java.util.ConcurrentModificationException
+        for (Iterator<Archive> i = archives.iterator(); i.hasNext();) {
+            Archive archive = i.next();
+            if (archive.hasSingleFile()) {
+                archive.getHashFromFile();
+                files.add(archive);
+                i.remove();
+            }
+        }
+
+        for (Archive archive : archives) {
+            if (archive.hasSingleFile()) {               
+                archives.remove(archive) ;
+                files.add(archive);
+                archive.getHashFromFile(); 
+            }
+        }
     }
 
     /**
