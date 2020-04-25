@@ -54,7 +54,7 @@ public class Main {
 				.size() : "Error: The number of subdirectories is not equal to the number of scanned directories";
 
 		// process internal repetions first
-		internalRepetion |= manageInternalRepetions();
+		internalRepetion |= manageInternalFileRepetions();
 		internalRepetion |= manageIntenalArchiveRepetions();
 		if (internalRepetion) {
 			System.out.println("Internal repetions found:");
@@ -77,7 +77,7 @@ public class Main {
 
 		// will be looking for repetions and will organize everything
 		int numOfRepetions = 0;
-		numOfRepetions += manageRepetions();
+		numOfRepetions += manageFileRepetions();
 		numOfRepetions += manageArchiveRepetions();
 		
 		// prints the statics of the reptions found
@@ -144,7 +144,7 @@ public class Main {
 	 * 
 	 * @return if a internal repetion was found
 	 */
-	private boolean manageInternalRepetions() {
+	private boolean manageInternalFileRepetions() {
 		boolean internalRepetionFound = false;
 		for (Directory dir : dirs) {
 			ArrayList<FileInfo> files = dir.getFiles();
@@ -200,7 +200,7 @@ public class Main {
 	 * more files have the same hash, they'll be togheter, using this, organization
 	 * is also easier
 	 */
-	private int manageRepetions() {
+	private int manageFileRepetions() {
 		int numOfRepetions = 0; // stores the number of repetions of all directories, every repetion found will
 								// increase this
 		for (int i = 0; i < files.size() - 1; i++) {

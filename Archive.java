@@ -87,7 +87,6 @@ public class Archive extends FileInfo {
     }
 
     public static class MyExtractCallback implements IArchiveExtractCallback {
-        private int size = 0;
         private int index;
         private boolean skipExtraction;
         private IInArchive inArchive;
@@ -110,13 +109,12 @@ public class Archive extends FileInfo {
                 public int write(byte[] data) throws SevenZipException {
                     MessageDigest complete;
                     try {
-                        complete = MessageDigest.getInstance("MD5");                        
+                        complete = MessageDigest.getInstance("MD5");
                         hash = complete.digest(data);
                         digests.add(hash);
                     } catch (NoSuchAlgorithmException e) {
                         e.printStackTrace();
                     }
-                    size += data.length;
                     return data.length; // Return amount of proceed data
                 }
             };
@@ -132,9 +130,9 @@ public class Archive extends FileInfo {
             if (extractOperationResult != ExtractOperationResult.OK) {
                 System.err.println("Extraction error");
             } else {
-                System.out.println(String.format("    %32s | %s", FileInfo.getStringHash(hash),  inArchive.getProperty(index, PropID.PATH)));
+                System.out.println(String.format("    %32s | %s", FileInfo.getStringHash(hash),
+                        inArchive.getProperty(index, PropID.PATH)));
                 hash = null;
-                size = 0;
             }
         }
 
