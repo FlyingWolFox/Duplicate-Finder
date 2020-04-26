@@ -1,5 +1,6 @@
 import java.util.ArrayList;
 import java.util.Collections;
+import java.util.Iterator;
 import java.io.IOException;
 import java.nio.file.DirectoryStream;
 import java.nio.file.Files;
@@ -7,45 +8,70 @@ import java.nio.file.Path;
 import java.nio.file.Paths;
 
 /**
- * This class holds Directory info and the files that it have. Also tracks
- * internal and external repetions. To know more info:
- * https://github.com/FlyingWolFox/Duplicate-Finder
+ * Directory info. Hold the files that it has and tracks statiscs. To know more
+ * info: https://github.com/FlyingWolFox/Duplicate-Finder
  * 
- * @version 0.9.0-3
+ * @version 1.2
  * @author FlyingWolFox / lips.pissaia@gmail.com
  */
 public class Directory {
-    private ArrayList<FileInfo> files; // files that are in the folder
-    private Path path; // path to the directory
+    private ArrayList<FileInfo> files;
+    private ArrayList<Archive> archives;
+    private Path path;
     private int num; // dir id
     private static int x; // used to generate dir id
-    private int numOfInternalRepetions; // tracks how many internal repetions this dir has
-    private int numOfRepetions; // tracks how many external repetions this dir was involved
+    private int numOfInternalRepetions;
+    private int numOfRepetions;
     static {
         x = 0;
     }
 
     /**
-     * Main contructor, takes the path to the directory and will process all files
+     * Main contructor, takes the path to the directory and process all files
      * 
-     * @param path // path to the directory
-     * @throws IOException // if there was an error opening the directory
+     * @param path path to the directory
+     * @throws IOException if there was an error opening the directory
      */
     public Directory(String path) throws IOException {
         num = x; // gets dir id
         this.path = Paths.get(path);
         files = new ArrayList<FileInfo>();
+        archives = new ArrayList<Archive>();
+        System.out.println("");
+        System.out.println("Opening " + path);
         // open the DirectoryStream to get files
         DirectoryStream<Path> stream = Files.newDirectoryStream(Paths.get(path));
         for (Path file : stream) {
             if (!file.toFile().isDirectory()) {
-                System.out.println("Opening: " + file.getFileName());
-                files.add(new FileInfo(file.toFile(), this));
+                if (Archive.isArchive(file.getFileName().toString())) {
+                    archives.add(new Archive(file.toFile(), this));
+                } else
+                    files.add(new FileInfo(file.toFile(), this));
             }
         }
-        Collections.sort(files); // this sorts the collection based on the hash of each file
+        trasnformSingleFileArchives();
+        Collections.sort(files); // sorts based on hash
+        if (archives.size() != 0)
+            Collections.sort(archives, archives.get(0).new ArchiveComparator());
         x++;
-        stream.close(); // closes the stream
+        stream.close();
+    }
+
+    /**
+     * looks for archives that contains a single file. Transforms archive into file
+     * by using the compressed file hash instead of the archive file hash and puts
+     * it with in files ArrayList
+     */
+    public void trasnformSingleFileArchives() {
+        // Uses iterator to avoid java.util.ConcurrentModificationException
+        for (Iterator<Archive> i = archives.iterator(); i.hasNext();) {
+            Archive archive = i.next();
+            if (archive.hasSingleFile()) {
+                archive.getHashFromFile();
+                files.add(archive);
+                i.remove();
+            }
+        }
     }
 
     /**
@@ -60,6 +86,13 @@ public class Directory {
      */
     public ArrayList<FileInfo> getFiles() {
         return files;
+    }
+
+    /**
+     * @return ArrayList of archives of this dir
+     */
+    public ArrayList<Archive> getArchives() {
+        return archives;
     }
 
     /**

@@ -7,148 +7,163 @@ import java.security.MessageDigest;
 import java.security.NoSuchAlgorithmException;
 
 /**
- * This class holds file information. To know more info:
+ * A file. Responsible to calculate hash. To know more info:
  * https://github.com/FlyingWolFox/Duplicate-Finder
  * 
- * @version 0.9.0-3
+ * @version 1.2
  * @author FlyingWolFox / lips.pissaia@gmail.com
  */
 public class FileInfo implements Comparable<FileInfo> {
-	private File file; // file information
-	private String name; // filename
-	private Path path; // file path
-	private String hash;
-	private Directory dir; // directory that the file is in
-	private int num; // the file id in this directory
-	private boolean repeated; // flag to be used in internal repetion handling
-	private static int y; // used to generate file ids
+    private File file;
+    private String name;
+    private Path path;
+    private String hash;
+    private Directory dir; // directory that the file is in
+    private int num; // the file id in this directory
+    private static int y; // used to generate file ids
 
-	static {
-		y = 0;
-	}
+    static {
+        y = 0;
+    }
 
-	/**
-	 * main constructor. Initialize all variable and calculates the hash
-	 * 
-	 * @param file // the file
-	 * @param dir  // the directory it's in
-	 */
-	public FileInfo(File file, Directory dir) {
-		this.file = file;
-		this.path = file.toPath();
-		this.num = y;
-		this.dir = dir;
-		this.name = file.getName();
-		try {
-			calculateHash();
-		} catch (NoSuchAlgorithmException | IOException e) {
-			e.printStackTrace();
-		}
-		y++;
-		System.out.println("	MD5: " + hash);
-	}
+    /**
+     * main constructor. Initialize all variable and calculates the hash
+     * 
+     * @param file // the file
+     * @param dir  // the directory it's in
+     */
+    public FileInfo(File file, Directory dir) {
+        this.file = file;
+        this.path = file.toPath();
+        this.num = y;
+        this.dir = dir;
+        this.name = file.getName();
+        System.out.print(String.format(":.. %s", name));
+        try {
+            calculateHash();
+            System.out.println(" [OK]");
+        } catch (IOException e) {
+            System.out.println(" [ERROR] " + e);
+        }
+        y++;
+    }
 
-	// calculates the md5 hash of this file
-	public void calculateHash() throws NoSuchAlgorithmException, IOException {
-		InputStream fis = new FileInputStream(path.toString());
+    /**
+     * calculates the hash of the file
+     * 
+     * @throws IOException if file read fails
+     */
+    public void calculateHash() throws IOException {
+        InputStream fis = new FileInputStream(path.toString());
 
-		byte[] buffer = new byte[1024];
-		MessageDigest complete = MessageDigest.getInstance("MD5");
+        byte[] buffer = new byte[1024];
+        MessageDigest complete = null;
+        try {
+            complete = MessageDigest.getInstance("MD5");
+        } catch (NoSuchAlgorithmException e) {
+            System.out.print("Failed to get MD5 hash algorithm");
+            e.printStackTrace();
+            System.exit(10);
+        }
 
-		int numRead;
+        int numRead;
 
-		do {
-			numRead = fis.read(buffer);
-			if (numRead > 0) {
-				complete.update(buffer, 0, numRead);
-			}
-		} while (numRead != -1);
+        do {
+            numRead = fis.read(buffer);
+            if (numRead > 0) {
+                complete.update(buffer, 0, numRead);
+            }
+        } while (numRead != -1);
 
-		fis.close();
+        fis.close();
 
-		byte[] digest = complete.digest();
+        byte[] digest = complete.digest();
 
-		// This bytes[] has bytes in decimal format;
-		// Convert it to hexadecimal format
-		StringBuilder sb = new StringBuilder();
-		for (int i = 0; i < digest.length; i++) {
-			sb.append(Integer.toString((digest[i] & 0xff) + 0x100, 16).substring(1));
-		}
+        // This bytes[] has bytes in numeric format;
+        // Convert it to hexadecimal string
+        hash = getStringHash(digest);
+    }
 
-		hash = sb.toString();
-	}
+    /**
+     * Coverts byte array to an hexadecimal string
+     * 
+     * @param digest byte array with the hash
+     * @return the hexadecimal string
+     */
+    public static String getStringHash(byte[] digest) {
+        StringBuilder sb = new StringBuilder();
+        for (int i = 0; i < digest.length; i++) {
+            sb.append(Integer.toString((digest[i] & 0xff) + 0x100, 16).substring(1));
+        }
 
-	/**
-	 * @return this file
-	 */
-	public File getFile() {
-		return this.file;
-	}
+        return sb.toString();
+    }
 
-	/**
-	 * @return the path of this file
-	 */
-	public Path getPath() {
-		return this.path;
-	}
+    /**
+     * @return this pathname
+     */
+    public File getFile() {
+        return this.file;
+    }
 
-	/**
-	 * @return the md5 hash of this file
-	 */
-	public String getHash() {
-		return this.hash;
-	}
+    /**
+     * @return the path of the file
+     */
+    public Path getPath() {
+        return this.path;
+    }
 
-	/**
-	 * @return the directory of this file
-	 */
-	public Directory getDir() {
-		return dir;
-	}
+    /**
+     * @return the hash of the file
+     */
+    public String getHash() {
+        return this.hash;
+    }
 
-	/**
-	 * @return the name of the file
-	 */
-	public String getName() {
-		return name;
-	}
+    /**
+     * Sets the hash of this file. Used to convert archives with single file
+     * 
+     * @param hash new hash of the file
+     */
+    protected void setHash(String hash) {
+        if (this.hash.length() == hash.length())
+            this.hash = hash;
+    }
 
-	/**
-	 * Set a new name for th file. To be used in renaming the file
-	 * 
-	 * @param name new filename
-	 */
-	public void setName(String name) {
-		this.name = name;
-	}
+    /**
+     * @return the directory of the file
+     */
+    public Directory getDir() {
+        return dir;
+    }
 
-	/**
-	 * @return the file number
-	 */
-	public int getNum() {
-		return num;
-	}
+    /**
+     * @return the name of the file
+     */
+    public String getName() {
+        return name;
+    }
 
-	/**
-	 * @return if the file is part of internal repetions
-	 */
-	public boolean getRepeated() {
-		return repeated;
-	}
+    /**
+     * Set a new name for the file.
+     * 
+     * @param name new filename
+     */
+    public void setName(String name) {
+        this.name = name;
+    }
 
-	/**
-	 * Set that this file is part of internal repetions
-	 */
-	public void setRepeated() {
-		this.repeated = true;
-	}
+    /**
+     * @return the file number
+     */
+    public int getNum() {
+        return num;
+    }
 
-	@Override
-	/**
-	 * Used to compare files to find repetions
-	 */
-	public int compareTo(FileInfo file) {
-		return hash.compareTo(file.getHash());
-	}
+    @Override
+    public int compareTo(FileInfo file) {
+        // compare based on hash
+        return hash.compareTo(file.getHash());
+    }
 
 }
