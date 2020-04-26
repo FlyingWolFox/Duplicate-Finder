@@ -27,7 +27,7 @@ public class Archive extends FileInfo {
             calculateHashes();
         } catch (IOException e) {
             System.out.println(
-                    "Error trying to get hashes for the archive " + super.getFile().getAbsolutePath() + ": " + e);
+                    ":...:>Error trying to get hashes for the archive " + super.getFile().getAbsolutePath() + ": " + e);
             e.printStackTrace();     
         }
     }
@@ -56,9 +56,6 @@ public class Archive extends FileInfo {
             inArchive = SevenZip.openInArchive(null, // autodetect archive type
                     new RandomAccessFileInStream(randomAccessFile));
 
-            System.out.println("                   Hash              | Filename");
-            System.out.println("    ---------------------------------+---------");
-
             int[] in = new int[inArchive.getNumberOfItems()];
             for (int i = 0; i < in.length; i++) {
                 in[i] = i;
@@ -66,21 +63,21 @@ public class Archive extends FileInfo {
             inArchive.extract(in, false, // Non-test mode
                     new MyExtractCallback(inArchive));
         } catch (Exception e) {
-            System.err.println("Error occurs: " + e);
+            System.err.println(":.. :> Error occurs: " + e);
             e.printStackTrace();
         } finally {
             if (inArchive != null) {
                 try {
                     inArchive.close();
                 } catch (SevenZipException e) {
-                    System.err.println("Error closing archive: " + e);
+                    System.err.println(":..: > Error closing archive: " + e);
                 }
             }
             if (randomAccessFile != null) {
                 try {
                     randomAccessFile.close();
                 } catch (IOException e) {
-                    System.err.println("Error closing file: " + e);
+                    System.err.println(":..: > Error closing file: " + e);
                 }
             }
         }
@@ -128,10 +125,9 @@ public class Archive extends FileInfo {
                 return;
             }
             if (extractOperationResult != ExtractOperationResult.OK) {
-                System.err.println("Extraction error");
+                System.err.println(":..: > Extraction error");
             } else {
-                System.out.println(String.format("    %32s | %s", FileInfo.getStringHash(hash),
-                        inArchive.getProperty(index, PropID.PATH)));
+                System.out.println(String.format(":.. :.. %s [OK]", inArchive.getProperty(index, PropID.PATH)));
                 hash = null;
             }
         }

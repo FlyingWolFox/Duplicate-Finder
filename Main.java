@@ -51,19 +51,20 @@ public class Main {
 
 		// this should always be true
 		assert subfolders.size() == dirs
-				.size() : "Error: The number of subdirectories is not equal to the number of scanned directories";
+				.size() : "Error: The number of results subdirectories is not equal to the number of scanned directories";
 
 		// process internal repetions first
 		internalRepetion |= manageInternalFileRepetions();
 		internalRepetion |= manageIntenalArchiveRepetions();
+		System.out.println("");
 		if (internalRepetion) {
 			System.out.println("Internal repetions found:");
 			for (Directory dir : dirs) {
-				System.out.println(
+				System.out.println(":.. " +
 						dir.getNumOfInternalRepetions() + " internal repetions in " + dir.getPath().toString());
 			}
 			System.out
-					.println("Internal are in their respective directories. Clean then first then run the tool again");
+					.println(":> Internal are in their respective directories. Clean then first then run the tool again");
 			return;
 		} else
 			System.out.println("No internal repetions found");
@@ -79,11 +80,11 @@ public class Main {
 		int numOfRepetions = 0;
 		numOfRepetions += manageFileRepetions();
 		numOfRepetions += manageArchiveRepetions();
-		
+
 		// prints the statics of the reptions found
 		System.out.println(numOfRepetions + " repetions found:");
 		for (Directory dir : dirs) {
-			System.out.println(dir.getNumOfRepetions() + " files in " + dir.getPath().toString());
+			System.out.println(":.. " + dir.getNumOfRepetions() + " files in " + dir.getPath().toString());
 		}
 		System.out.println("");
 
@@ -276,13 +277,13 @@ public class Main {
 					Path source1 = archive1.getPath();
 					archive1.setName(archive1.getNum() + letter + "- " + archive1.getName());
 					Path target1 = subfolders.get(dirs.indexOf(dir)).resolve(archive1.getName());
-					
-					while(c.compare(archive1, archive2) == 0) {						
+
+					while (c.compare(archive1, archive2) == 0) {
 						dir.increaseNumOfInternalRepetions();
 						Path source2 = archive2.getPath();
 						archive2.setName(archive1.getNum() + letter + "- " + archive2.getName());
 						Path target2 = subfolders.get(dirs.indexOf(dir)).resolve(archive2.getName());
-						
+
 						try {
 							Files.move(source2, target2);
 						} catch (IOException e) {
@@ -303,11 +304,12 @@ public class Main {
 					try {
 						Files.move(source1, target1);
 					} catch (IOException e) {
-						System.out.println("Error moving " + source1.toString() + " to " + target1.toString() + ": " + e);
+						System.out
+								.println("Error moving " + source1.toString() + " to " + target1.toString() + ": " + e);
 					}
 				}
 			}
-			
+
 		}
 
 		return internalRepetionFound;
@@ -319,7 +321,7 @@ public class Main {
 		for (Directory dir : dirs) {
 			archives.addAll(dir.getArchives());
 		}
-		if (archives.size() == 0) 
+		if (archives.size() == 0)
 			return 0;
 		Archive.ArchiveComparator c = archives.get(0).new ArchiveComparator();
 		Collections.sort(archives, c);
@@ -327,18 +329,20 @@ public class Main {
 		for (int i = 0; i < archives.size() - 1; i++) {
 			Archive archive1 = archives.get(i);
 			Archive archive2 = archives.get(i + 1);
-			if(c.compare(archive1, archive2) == 0) {
+			if (c.compare(archive1, archive2) == 0) {
 				numOfRepetions++;
 				archive1.getDir().increaseNumOfRepetions();
 				archive2.getDir().increaseNumOfRepetions();
 				Path source1 = archive1.getPath();
-				archive1.setName(archive1.getNum() + letters.get(archive1.getDir().getNum()).toString() + "- " + archive1.getName());
-				Path target1 = subfolders.get(archive1.getDir().getNum()).resolve(archive1.getName()); 
+				archive1.setName(archive1.getNum() + letters.get(archive1.getDir().getNum()).toString() + "- "
+						+ archive1.getName());
+				Path target1 = subfolders.get(archive1.getDir().getNum()).resolve(archive1.getName());
 
 				while (c.compare(archive1, archive2) == 0) {
 					archive2.getDir().increaseNumOfInternalRepetions();
 					Path source2 = archive2.getPath();
-					archive2.setName(archive1.getNum() + letters.get(archive2.getDir().getNum()).toString() + "- " + archive2.getName());
+					archive2.setName(archive1.getNum() + letters.get(archive2.getDir().getNum()).toString() + "- "
+							+ archive2.getName());
 					Path target2 = subfolders.get(archive2.getDir().getNum()).resolve(archive2.getName());
 					try {
 						Files.move(source2, target2);
@@ -349,8 +353,8 @@ public class Main {
 					}
 
 					archives.remove(archive2); // remove the file of the collection, so comparasion can proceed without
-											// getting
-											// a integer iterator
+												// getting
+												// a integer iterator
 					try {
 						archive2 = archives.get(i + 1);
 					} catch (IndexOutOfBoundsException e) {
@@ -381,7 +385,7 @@ public class Main {
 	 */
 	public static void main(String[] args) {
 		if (args.length < 1) {
-			System.out.println("	usage: <dir> ...");
+			System.out.println("usage: <dir> ...");
 			System.exit(0);
 		}
 		new Main(args);

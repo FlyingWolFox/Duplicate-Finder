@@ -38,11 +38,12 @@ public class Directory {
         this.path = Paths.get(path);
         files = new ArrayList<FileInfo>();
         archives = new ArrayList<Archive>();
+        System.out.println("");
+        System.out.println("Opening " + path);
         // open the DirectoryStream to get files
         DirectoryStream<Path> stream = Files.newDirectoryStream(Paths.get(path));
         for (Path file : stream) {
             if (!file.toFile().isDirectory()) {
-                System.out.println("Opening: " + file.getFileName());
                 if (Archive.isArchive(file.getFileName().toString())) {
                     archives.add(new Archive(file.toFile(), this));
                 }

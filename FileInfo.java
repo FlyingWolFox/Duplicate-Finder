@@ -38,13 +38,14 @@ public class FileInfo implements Comparable<FileInfo> {
 		this.num = y;
 		this.dir = dir;
 		this.name = file.getName();
+		System.out.print(String.format(":.. %s", name));
 		try {
 			calculateHash();
+			System.out.println(" [OK]");
 		} catch (NoSuchAlgorithmException | IOException e) {
-			e.printStackTrace();
+			System.out.println(" [ERROR]");
 		}
 		y++;
-		System.out.println("    MD5: " + hash);
 	}
 
 	// calculates the md5 hash of this file
