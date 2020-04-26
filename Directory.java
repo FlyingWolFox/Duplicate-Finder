@@ -8,30 +8,29 @@ import java.nio.file.Path;
 import java.nio.file.Paths;
 
 /**
- * This class holds Directory info and the files that it have. Also tracks
- * internal and external repetions. To know more info:
- * https://github.com/FlyingWolFox/Duplicate-Finder
+ * Directory info. Hold the files that it has and tracks statiscs. To know more
+ * info: https://github.com/FlyingWolFox/Duplicate-Finder
  * 
- * @version 0.9.0-3
+ * @version 1.2
  * @author FlyingWolFox / lips.pissaia@gmail.com
  */
 public class Directory {
-    private ArrayList<FileInfo> files; // files that are in the folder
+    private ArrayList<FileInfo> files;
     private ArrayList<Archive> archives;
-    private Path path; // path to the directory
+    private Path path;
     private int num; // dir id
     private static int x; // used to generate dir id
-    private int numOfInternalRepetions; // tracks how many internal repetions this dir has
-    private int numOfRepetions; // tracks how many external repetions this dir was involved
+    private int numOfInternalRepetions;
+    private int numOfRepetions;
     static {
         x = 0;
     }
 
     /**
-     * Main contructor, takes the path to the directory and will process all files
+     * Main contructor, takes the path to the directory and process all files
      * 
-     * @param path // path to the directory
-     * @throws IOException // if there was an error opening the directory
+     * @param path path to the directory
+     * @throws IOException if there was an error opening the directory
      */
     public Directory(String path) throws IOException {
         num = x; // gets dir id
@@ -46,35 +45,31 @@ public class Directory {
             if (!file.toFile().isDirectory()) {
                 if (Archive.isArchive(file.getFileName().toString())) {
                     archives.add(new Archive(file.toFile(), this));
-                }
-                else
+                } else
                     files.add(new FileInfo(file.toFile(), this));
             }
         }
         trasnformSingleFileArchives();
-        Collections.sort(files); // this sorts the collection based on the hash of each file
+        Collections.sort(files); // sorts based on hash
         if (archives.size() != 0)
             Collections.sort(archives, archives.get(0).new ArchiveComparator());
         x++;
-        stream.close(); // closes the stream
+        stream.close();
     }
 
+    /**
+     * looks for archives that contains a single file. Transforms archive into file
+     * by using the compressed file hash instead of the archive file hash and puts
+     * it with in files ArrayList
+     */
     public void trasnformSingleFileArchives() {
-        // Using iterator to avoid java.util.ConcurrentModificationException
+        // Uses iterator to avoid java.util.ConcurrentModificationException
         for (Iterator<Archive> i = archives.iterator(); i.hasNext();) {
             Archive archive = i.next();
             if (archive.hasSingleFile()) {
                 archive.getHashFromFile();
                 files.add(archive);
                 i.remove();
-            }
-        }
-
-        for (Archive archive : archives) {
-            if (archive.hasSingleFile()) {               
-                archives.remove(archive) ;
-                files.add(archive);
-                archive.getHashFromFile(); 
             }
         }
     }

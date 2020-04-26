@@ -17,6 +17,14 @@ import net.sf.sevenzipjbinding.SevenZip;
 import net.sf.sevenzipjbinding.SevenZipException;
 import net.sf.sevenzipjbinding.impl.RandomAccessFileInStream;
 
+/**
+ * Represents an archive. Responsible to get the hash of the files inside it.
+ * Supports every format that can be decompressed by 7zip. However, the span of
+ * formats is the most common ones. See isArchive() method for details
+ * 
+ * @version 1.2
+ * @author FlyingWolFox / lips.pissaia@gmail.com
+ */
 public class Archive extends FileInfo {
     private ArrayList<String> hashes;
 
@@ -26,28 +34,30 @@ public class Archive extends FileInfo {
         try {
             calculateHashes();
         } catch (IOException e) {
-            System.out.println(
-                    ":...:>Error trying to get hashes for the archive " + super.getFile().getAbsolutePath() + ": " + e);
-            e.printStackTrace();     
+            System.out.println(":...: > Error trying to get hashes for the archive " + super.getFile().getAbsolutePath()
+                    + ": " + e);
         }
     }
 
+    /**
+     * calculates hashes of the compressed files
+     * 
+     * @throws IOException
+     */
     public void calculateHashes() throws IOException {
         uncompress();
 
         for (byte[] digest : MyExtractCallback.getDigests()) {
-            // This bytes[] has bytes in decimal format;
-            // Convert it to hexadecimal format
-            StringBuilder sb = new StringBuilder();
-            for (int i = 0; i < digest.length; i++) {
-                sb.append(Integer.toString((digest[i] & 0xff) + 0x100, 16).substring(1));
-            }
-
-            hashes.add(sb.toString());
+            hashes.add(FileInfo.getStringHash(digest));
         }
         Collections.sort(hashes);
     }
 
+    /**
+     * uncompress archive and calculates the hashes. This code is a modified copy
+     * from the 7-Zip-JBinding code examples:
+     * http://sevenzipjbind.sourceforge.net/extraction_snippets.html
+     */
     public void uncompress() throws IOException {
         RandomAccessFile randomAccessFile = null;
         IInArchive inArchive = null;
@@ -83,16 +93,21 @@ public class Archive extends FileInfo {
         }
     }
 
+    /**
+     * Handles Extract Callbacks and file hashes.This code is a modified copy from
+     * the 7-Zip-JBinding code examples:
+     * http://sevenzipjbind.sourceforge.net/extraction_snippets.html
+     */
     public static class MyExtractCallback implements IArchiveExtractCallback {
         private int index;
         private boolean skipExtraction;
         private IInArchive inArchive;
-        private static byte[] hash;
+        private static byte[] digest;
         private static ArrayList<byte[]> digests;
 
         public MyExtractCallback(IInArchive inArchive) {
             this.inArchive = inArchive;
-            hash = null;
+            digest = null;
             digests = new ArrayList<byte[]>();
         }
 
@@ -107,8 +122,8 @@ public class Archive extends FileInfo {
                     MessageDigest complete;
                     try {
                         complete = MessageDigest.getInstance("MD5");
-                        hash = complete.digest(data);
-                        digests.add(hash);
+                        digest = complete.digest(data);
+                        digests.add(digest);
                     } catch (NoSuchAlgorithmException e) {
                         e.printStackTrace();
                     }
@@ -128,7 +143,7 @@ public class Archive extends FileInfo {
                 System.err.println(":..: > Extraction error");
             } else {
                 System.out.println(String.format(":.. :.. %s [OK]", inArchive.getProperty(index, PropID.PATH)));
-                hash = null;
+                digest = null;
             }
         }
 
@@ -144,11 +159,11 @@ public class Archive extends FileInfo {
     }
 
     @Override
-    public boolean equals(Object anObject) {        
+    public boolean equals(Object anObject) {
         if (anObject == null)
             return false;
 
-        if(!(anObject instanceof Archive)){
+        if (!(anObject instanceof Archive)) {
             return false;
         }
 
@@ -156,12 +171,15 @@ public class Archive extends FileInfo {
 
         if (this == archive)
             return true;
-        
+
         // Collections.sort(this.hashes);
         // Collections.sort(archive.hashes);
         return this.hashes.equals(archive.hashes);
     }
 
+    /**
+     * @return if the archive has a single file
+     */
     public boolean hasSingleFile() {
         if (hashes.size() == 1) {
             return true;
@@ -169,10 +187,18 @@ public class Archive extends FileInfo {
         return false;
     }
 
+    /**
+     * set archive hash to file 0's hash
+     */
     public void getHashFromFile() {
         setHash(hashes.get(0));
     }
 
+    /**
+     * Compares archives based of the list of hashes. Archives with more files are
+     * "bigger" then ones with less. Archives with the same number of files are
+     * compared like String.compareTo().
+     */
     class ArchiveComparator implements Comparator<Archive> {
         @Override
         public int compare(Archive archive1, Archive archive2) {
@@ -189,27 +215,33 @@ public class Archive extends FileInfo {
         }
     }
 
-    // public static CompressedFile getCompressedFile(FileInfo file, CompressedType
-    // type) { }
-
+    /**
+     * @return compressed files' hashes
+     */
     public ArrayList<String> getHashes() {
         return this.hashes;
     }
 
+    /**
+     * this limits what th escript reconizes as archive. All 7zip supported formats
+     * are actually suported by the 7-Zip-JBinding lib
+     * 
+     * @param filename with extension
+     * @return if the file is an archive
+     */
     public static boolean isArchive(String filename) {
-        String[] extensions = {".cpio", ".7z", ".zip", ".zipx", ".gz", ".bz2", ".tar", ".rar", ".rev", ".iso", ".arj", ".Z", ".udf"};
-        int i  = filename.length() - 1;
+        String[] extensions = { ".cpio", ".7z", ".zip", ".zipx", ".gz", ".bz2", ".tar", ".rar", ".rev", ".iso", ".arj",
+                ".Z", ".udf" };
+        int i = filename.length() - 1;
         while (filename.charAt(i) != '.') {
             i--;
-        };
+        }
 
         String fileExtension = filename.substring(i);
-
         for (String extension : extensions) {
             if (extension.equalsIgnoreCase(fileExtension))
                 return true;
         }
-
         return false;
     }
 }
