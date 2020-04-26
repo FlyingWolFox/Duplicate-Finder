@@ -233,9 +233,11 @@ public class Archive extends FileInfo {
         String[] extensions = { ".cpio", ".7z", ".zip", ".zipx", ".gz", ".bz2", ".tar", ".rar", ".rev", ".iso", ".arj",
                 ".Z", ".udf" };
         int i = filename.length() - 1;
-        while (filename.charAt(i) != '.') {
+        while (i > -1 && filename.charAt(i) != '.') {
             i--;
         }
+
+        if (i < 0) i = 0;
 
         String fileExtension = filename.substring(i);
         for (String extension : extensions) {
