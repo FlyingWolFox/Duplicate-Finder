@@ -73,7 +73,7 @@ public class Archive extends FileInfo {
             inArchive.extract(in, false, // Non-test mode
                     new MyExtractCallback(inArchive));
         } catch (Exception e) {
-            System.err.println(":.. :> Error occurs: " + e);
+            System.err.println(":.. : > Error occurs: " + e);
             e.printStackTrace();
         } finally {
             if (inArchive != null) {
@@ -102,12 +102,16 @@ public class Archive extends FileInfo {
         private int index;
         private boolean skipExtraction;
         private IInArchive inArchive;
-        private static byte[] digest;
+        private static MessageDigest digest;
         private static ArrayList<byte[]> digests;
 
         public MyExtractCallback(IInArchive inArchive) {
             this.inArchive = inArchive;
-            digest = null;
+            try {
+                digest = MessageDigest.getInstance("MD5");
+            } catch (NoSuchAlgorithmException e) {
+                e.printStackTrace();
+            }
             digests = new ArrayList<byte[]>();
         }
 
@@ -119,14 +123,7 @@ public class Archive extends FileInfo {
             }
             return new ISequentialOutStream() {
                 public int write(byte[] data) throws SevenZipException {
-                    MessageDigest complete;
-                    try {
-                        complete = MessageDigest.getInstance("MD5");
-                        digest = complete.digest(data);
-                        digests.add(digest);
-                    } catch (NoSuchAlgorithmException e) {
-                        e.printStackTrace();
-                    }
+                    digest.update(data);
                     return data.length; // Return amount of proceed data
                 }
             };
@@ -143,7 +140,7 @@ public class Archive extends FileInfo {
                 System.err.println(":..: > Extraction error");
             } else {
                 System.out.println(String.format(":.. :.. %s [OK]", inArchive.getProperty(index, PropID.PATH)));
-                digest = null;
+                digests.add(digest.digest());
             }
         }
 
@@ -172,8 +169,6 @@ public class Archive extends FileInfo {
         if (this == archive)
             return true;
 
-        // Collections.sort(this.hashes);
-        // Collections.sort(archive.hashes);
         return this.hashes.equals(archive.hashes);
     }
 
@@ -237,7 +232,8 @@ public class Archive extends FileInfo {
             i--;
         }
 
-        if (i < 0) i = 0;
+        if (i < 0)
+            i = 0;
 
         String fileExtension = filename.substring(i);
         for (String extension : extensions) {
