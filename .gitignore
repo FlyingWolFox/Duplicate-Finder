@@ -25,3 +25,4 @@ DuplicateFinder.exe
 package.bluej
 *.lnk
 .vscode/launch.json
+*.MF

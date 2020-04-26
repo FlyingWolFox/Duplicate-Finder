@@ -7,7 +7,7 @@
 <JVMSearchPath>exepath</JVMSearchPath>
 <JVMSearchPath>jview</JVMSearchPath>
 <arguments></arguments>
-<classPath>.</classPath>
+<classPath>DuplicateFinder.jar</classPath>
 <classPath>7-Zip-JBinding\sevenzipjbinding.jar</classPath>
 <classPath>7-Zip-JBinding\sevenzipjbinding-AllPlatforms.jar</classPath>
 <embeddedJar>false</embeddedJar>
