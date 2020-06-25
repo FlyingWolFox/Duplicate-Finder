@@ -26,3 +26,10 @@ package.bluej
 *.lnk
 .vscode/launch.json
 *.MF
+jdom-2.0.6/LICENSE.txt
+jdom-2.0.6/README.txt
+jdom-2.0.6/lib/jaxen-1.1.6.LICENSE.txt
+jdom-2.0.6/lib/xerces.2.11.LICENSE
+jdom-2.0.6/lib/xerces.2.11.NOTICE
+jdom-2.0.6/lib/xalan/xalan-2.7.2.LICENSE
+jdom-2.0.6/lib/xalan/xalan-2.7.2.NOTICE
