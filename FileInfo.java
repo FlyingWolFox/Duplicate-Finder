@@ -18,6 +18,7 @@ public class FileInfo implements Comparable<FileInfo> {
     private String name;
     private Path path;
     private String hash;
+    private String lastModified;
     private Directory dir; // directory that the file is in
     private int num; // the file id in this directory
     private static int y; // used to generate file ids
@@ -38,6 +39,7 @@ public class FileInfo implements Comparable<FileInfo> {
         this.num = y;
         this.dir = dir;
         this.name = file.getName();
+        this.lastModified = String.valueOf(file.lastModified());
         System.out.print(String.format(":.. %s", name));
         try {
             calculateHash();
@@ -45,6 +47,17 @@ public class FileInfo implements Comparable<FileInfo> {
         } catch (IOException e) {
             System.out.println(" [ERROR] " + e);
         }
+        y++;
+    }
+
+    public FileInfo(Path path, String hash, String lastModified, Directory dir) {
+        this.file = new File(path.toString());
+        this.path = path;
+        this.num = y;
+        this.dir = dir;
+        this.name = path.getFileName().toString();
+        this.lastModified = lastModified;
+        this.hash = hash;
         y++;
     }
 
@@ -158,6 +171,20 @@ public class FileInfo implements Comparable<FileInfo> {
      */
     public int getNum() {
         return num;
+    }
+
+    /**
+     * @return file's last modified date
+     */
+    public String getLastModified() {
+        return lastModified;
+    }
+
+    /**
+     * @param lastModified new date
+     */
+    public void setLastModified(String lastModified) {
+        this.lastModified = lastModified;
     }
 
     @Override

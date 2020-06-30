@@ -1,6 +1,7 @@
 import java.io.File;
 import java.io.IOException;
 import java.io.RandomAccessFile;
+import java.nio.file.Path;
 import java.security.MessageDigest;
 import java.security.NoSuchAlgorithmException;
 import java.util.ArrayList;
@@ -37,6 +38,11 @@ public class Archive extends FileInfo {
             System.out.println(":...: > Error trying to get hashes for the archive " + super.getFile().getAbsolutePath()
                     + ": " + e);
         }
+    }
+
+    public Archive(Path path, String hash, ArrayList<String> hashes, String lastModified, Directory dir) {
+        super(path, hash, lastModified, dir);
+        this.hashes = hashes;
     }
 
     /**
