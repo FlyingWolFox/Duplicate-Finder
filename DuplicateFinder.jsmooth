@@ -8,8 +8,9 @@
 <JVMSearchPath>jview</JVMSearchPath>
 <arguments></arguments>
 <classPath>DuplicateFinder.jar</classPath>
-<classPath>7-Zip-JBinding\sevenzipjbinding.jar</classPath>
-<classPath>7-Zip-JBinding\sevenzipjbinding-AllPlatforms.jar</classPath>
+<classPath>lib\jdom-2.0.6.jar</classPath>
+<classPath>lib\sevenzipjbinding.jar</classPath>
+<classPath>lib\sevenzipjbinding-AllPlatforms.jar</classPath>
 <embeddedJar>false</embeddedJar>
 <executableName>DuplicateFinder.exe</executableName>
 <initialMemoryHeap>-1</initialMemoryHeap>
