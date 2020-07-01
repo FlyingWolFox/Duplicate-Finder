@@ -28,26 +28,31 @@ public class Cache {
      * @param dir Directory to be cached
      */
     public static void createCache(Directory dir) {
-        // TODO: verbosity
+        System.out.println("Creating cache...");
+        
         // sort arrays
         Collections.sort(dir.getArchives());
         Collections.sort(dir.getFiles());
-
+        
         // root element
         Element dirElement = new Element("dir");
         dirElement.setAttribute(new Attribute("path", dir.getPath().toString()));
         Document doc = new Document(dirElement);
 
         // file subelements
+        ProgressBar bar = new ProgressBar("Caching files", dir.getFiles().size());
         for (FileInfo file : dir.getFiles()) {
             Element fileElement = convertToFileElement(file);
             doc.getRootElement().addContent(fileElement);
+            bar.update();
         }
 
         // archive subelement
+        bar = new ProgressBar("Caching archives", dir.getArchives().size());
         for (Archive archive : dir.getArchives()) {
             Element archiveElement = convertToArchiveElement(archive);
             doc.getRootElement().addContent(archiveElement);
+            bar.update();
         }
 
         // write cache
@@ -73,6 +78,7 @@ public class Cache {
             System.out.print("Cache creation failed");
             System.exit(0xC1);
         }
+        System.out.println("Cache creation complete");
     }
 
     private static Element convertToArchiveElement(Archive archive) {
@@ -117,7 +123,7 @@ public class Cache {
      * @return FileInfo[][], FileInfo[0][] is files and FileInfo[1][] is archives
      */
     public static FileInfo[][] getCache(Directory dir) {
-        // TODO: verbosity
+        System.out.println("Retrieving cache...");
         ArrayList<FileInfo> files = new ArrayList<FileInfo>();
         ArrayList<Archive> archives = new ArrayList<Archive>();
         MessageDigest messageDigest;
@@ -139,13 +145,16 @@ public class Cache {
                 System.out.println(inputFile.getName() + " isn't " + dirElement.getAttribute("path") + " cache file!");
             }
             List<Element> filesList = dirElement.getChildren("file");
+            ProgressBar bar = new ProgressBar("Retrieving files", filesList.size());
             for (Element fileElement : filesList) {
                 String fileName = fileElement.getChild("name").getText();
                 String fileHash = fileElement.getChild("hash").getText();
                 String fileLastModified = fileElement.getChild("last_modified").getText();
                 files.add(new FileInfo(dir.getPath().resolve(fileName), fileHash, fileLastModified, dir));
+                bar.update();
             }
             List<Element> archiveList = dirElement.getChildren("archive");
+            bar = new ProgressBar("Retrieving archives", archiveList.size());
             for (Element archiveElement : archiveList) {
                 String fileName = archiveElement.getChild("name").getText();
                 String fileHash = archiveElement.getChild("hash").getText();
@@ -156,6 +165,7 @@ public class Cache {
                 String fileLastModified = archiveElement.getChild("last_modified").getText();
                 archives.add(
                         new Archive(dir.getPath().resolve(fileName), fileHash, archiveHashes, fileLastModified, dir));
+                bar.update();
             }
         } catch (NoSuchAlgorithmException e) {
             System.out.print(e);
@@ -173,8 +183,8 @@ public class Cache {
             System.out.print("Cache load failed");
             System.exit(0xC5);
         }
-        // TODO: write method
-        // TODO: change return value
+        System.out.println("Cache retrieved");
+
         Collections.sort(files);
         Collections.sort(archives);
         FileInfo[][] ret = { (FileInfo[]) files.toArray(), (Archive[]) archives.toArray() };
@@ -193,6 +203,7 @@ public class Cache {
     public static void updateCache(Directory dir, FileInfo[][] filesUpdate, Archive[][] archivesUpdate) {
         MessageDigest messageDigest;
         try {
+            // Even if the cache file doesn't exists, nothing should break
             messageDigest = MessageDigest.getInstance("MD5");
             byte[] hashBytes = messageDigest.digest(dir.getPath().getParent().toString().getBytes());
             String hash = FileInfo.getStringHash(hashBytes);
@@ -201,6 +212,7 @@ public class Cache {
             if (!inputFile.exists()) {
                 createCache(dir);
             }
+            ProgressBar bar = new ProgressBar("Updating cache", 3);
             SAXBuilder saxBuilder = new SAXBuilder();
             Document document = saxBuilder.build(inputFile);
             Element dirElement = document.getRootElement();
@@ -226,6 +238,7 @@ public class Cache {
                     i--;
                 }
             }
+            bar.update();
             for (FileInfo file : filesUpdate[0]) {
                 Element fileElement = convertToFileElement(file);
                 dirElement.addContent(fileElement);
@@ -236,11 +249,14 @@ public class Cache {
             }
             dirElement.sortChildren(new FileElementComparator());
 
+            bar.update();
+
             XMLOutputter xmlOutput = new XMLOutputter();
             xmlOutput.setFormat(Format.getPrettyFormat());
             FileOutputStream output = new FileOutputStream(inputFile);
             xmlOutput.output(document, output);
             output.close();
+            bar.update();
         } catch (NoSuchAlgorithmException e) {
             System.out.print(e);
             System.out.print("Failed to get MD5 hash algorithm");

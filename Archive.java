@@ -36,7 +36,7 @@ public class Archive extends FileInfo {
             calculateHashes();
         } catch (IOException e) {
             System.out.println(":...: > Error trying to get hashes for the archive " + super.getFile().getAbsolutePath()
-                    + ": " + e);
+                    + ":> " + e);
         }
     }
 
@@ -145,7 +145,7 @@ public class Archive extends FileInfo {
             if (extractOperationResult != ExtractOperationResult.OK) {
                 System.err.println(":..: > Extraction error");
             } else {
-                System.out.println(String.format(":.. :.. %s [OK]", inArchive.getProperty(index, PropID.PATH)));
+                //System.out.println(String.format(":.. :.. %s [OK]", inArchive.getProperty(index, PropID.PATH)));
                 digests.add(digest.digest());
             }
         }

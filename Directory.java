@@ -60,7 +60,6 @@ public class Directory {
     }
 
     public Directory(String path) throws IOException {
-        // TODO: verbosity with cache
         num = x; // gets dir id
         this.path = Paths.get(path);
         files = new ArrayList<FileInfo>();
@@ -73,6 +72,7 @@ public class Directory {
         ArrayList<Archive> archiveDeletions = new ArrayList<Archive>();
         ArrayList<Archive> archiveAditions = new ArrayList<Archive>();
 
+        // Even if the cache file doesn't exists, nothing should break
         for (FileInfo file : fileCache) {
             if (!file.getFile().exists())
                 fileDeletions.add(file);
@@ -120,6 +120,8 @@ public class Directory {
         }
         stream.close();
 
+        Collections.sort(filesPaths);
+        Collections.sort(archivesPaths);
         for (int i = 0; i < filesPaths.size() - 1; i++) {
             String name1 = filesPaths.get(i).getFileName().toString();
             String name2 = filesPaths.get(i + 1).getFileName().toString();
@@ -140,11 +142,21 @@ public class Directory {
             }
         }
 
-        for (Path file : filesPaths)
-            fileAditions.add(new FileInfo(file.toFile(), this));
         
-        for (Path archive : archivesPaths)
+        System.out.println("");
+        System.out.println("Opening " + path);
+        ProgressBar bar = new ProgressBar("Hashing Files", filesPaths.size());
+        for (Path file : filesPaths) {
+            fileAditions.add(new FileInfo(file.toFile(), this));
+            bar.update();
+        }
+            
+        bar = new ProgressBar("Hashing Archives", archivesPaths.size());
+        for (Path archive : archivesPaths) {
             archiveAditions.add(new Archive(archive.toFile(), this));
+            bar.update();
+        }
+            
 
         files.addAll(fileCache);
         files.addAll(fileAditions);

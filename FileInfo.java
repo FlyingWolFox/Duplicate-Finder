@@ -40,11 +40,12 @@ public class FileInfo implements Comparable<FileInfo> {
         this.dir = dir;
         this.name = file.getName();
         this.lastModified = String.valueOf(file.lastModified());
-        System.out.print(String.format(":.. %s", name));
+        //System.out.print(String.format(":.. %s", name));
         try {
             calculateHash();
-            System.out.println(" [OK]");
+            //System.out.println(" [OK]");
         } catch (IOException e) {
+            System.out.print(String.format(":.. %s", name));
             System.out.println(" [ERROR] " + e);
         }
         y++;
