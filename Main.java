@@ -12,8 +12,8 @@ import java.util.HashMap;
  * folders passed for the constructor and will organize then in the Results
  * folder. To know more info: https://github.com/FlyingWolFox/Duplicate-Finder
  * 
- * @version 1.2
- * @author FlyingWolFox / lips.pissaia@gmail.com
+ * @version 1.3-beta
+ * @author FlyingWolFox
  */
 public class Main {
     private ArrayList<Directory> dirs;

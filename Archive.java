@@ -23,8 +23,8 @@ import net.sf.sevenzipjbinding.impl.RandomAccessFileInStream;
  * Supports every format that can be decompressed by 7zip. However, the span of
  * formats is the most common ones. See isArchive() method for details
  * 
- * @version 1.2
- * @author FlyingWolFox / lips.pissaia@gmail.com
+ * @version 1.3-beta
+ * @author FlyingWolFox
  */
 public class Archive extends FileInfo {
     private ArrayList<String> hashes;
@@ -145,7 +145,8 @@ public class Archive extends FileInfo {
             if (extractOperationResult != ExtractOperationResult.OK) {
                 System.err.println(":..: > Extraction error");
             } else {
-                //System.out.println(String.format(":.. :.. %s [OK]", inArchive.getProperty(index, PropID.PATH)));
+                // System.out.println(String.format(":.. :.. %s [OK]",
+                // inArchive.getProperty(index, PropID.PATH)));
                 digests.add(digest.digest());
             }
         }

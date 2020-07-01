@@ -1,5 +1,12 @@
 import static java.lang.System.out;
 
+/**
+ * Prints and controls a progress bar in the terminal. To know more info:
+ * https://github.com/FlyingWolFox/Duplicate-Finder
+ * 
+ * @author FlyingWolFox
+ * @version 1.0-beta
+ */
 public class ProgressBar {
     private String taskName;
     private long max;
@@ -15,7 +22,7 @@ public class ProgressBar {
         int percentage;
         int progress;
         percentage = (int) (100 * (current / max));
-        progress = (50 * percentage)/100;
+        progress = (50 * percentage) / 100;
         out.print("\r");
         out.print(taskName + " ");
         out.print(percentage + "% ");

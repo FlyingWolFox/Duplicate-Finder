@@ -10,8 +10,8 @@ import java.security.NoSuchAlgorithmException;
  * A file. Responsible to calculate hash. To know more info:
  * https://github.com/FlyingWolFox/Duplicate-Finder
  * 
- * @version 1.2
- * @author FlyingWolFox / lips.pissaia@gmail.com
+ * @version 1.3-beta
+ * @author FlyingWolFox
  */
 public class FileInfo implements Comparable<FileInfo> {
     private File file;
@@ -40,10 +40,10 @@ public class FileInfo implements Comparable<FileInfo> {
         this.dir = dir;
         this.name = file.getName();
         this.lastModified = String.valueOf(file.lastModified());
-        //System.out.print(String.format(":.. %s", name));
+        // System.out.print(String.format(":.. %s", name));
         try {
             calculateHash();
-            //System.out.println(" [OK]");
+            // System.out.println(" [OK]");
         } catch (IOException e) {
             System.out.print(String.format(":.. %s", name));
             System.out.println(" [ERROR] " + e);

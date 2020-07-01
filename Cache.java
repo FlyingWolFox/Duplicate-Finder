@@ -21,6 +21,13 @@ import java.util.List;
 import java.security.MessageDigest;
 import java.security.NoSuchAlgorithmException;
 
+/**
+ * creates, gets and updates xml cache files for the tool. To know more info:
+ * https://github.com/FlyingWolFox/Duplicate-Finder
+ * 
+ * @author FlyingWolFox
+ * @version 1.0-beta
+ */
 public class Cache {
     /**
      * Creates cache for a directory
@@ -29,11 +36,11 @@ public class Cache {
      */
     public static void createCache(Directory dir) {
         System.out.println("Creating cache...");
-        
+
         // sort arrays
         Collections.sort(dir.getArchives());
         Collections.sort(dir.getFiles());
-        
+
         // root element
         Element dirElement = new Element("dir");
         dirElement.setAttribute(new Attribute("path", dir.getPath().toString()));
@@ -57,10 +64,12 @@ public class Cache {
 
         // write cache
         try {
+            // get the file name
             MessageDigest messageDigest = MessageDigest.getInstance("MD5");
             byte[] hashBytes = messageDigest.digest(dir.getPath().getParent().toString().getBytes());
             String hash = FileInfo.getStringHash(hashBytes);
             String name = dir.getPath().getFileName().toString();
+
             Path cacheDir = Paths.get("Results").resolve(".cache");
             Files.createDirectories(cacheDir);
             XMLOutputter xmlOutput = new XMLOutputter();
@@ -81,6 +90,12 @@ public class Cache {
         System.out.println("Cache creation complete");
     }
 
+    /**
+     * Creates a ELement based on a archive
+     * 
+     * @param archive archive to be converted
+     * @return Element based on the archive
+     */
     private static Element convertToArchiveElement(Archive archive) {
         Element archiveElement = new Element("archive");
         Element nameElement = new Element("name");
@@ -102,6 +117,12 @@ public class Cache {
         return archiveElement;
     }
 
+    /**
+     * Creates a ELement based on a file
+     * 
+     * @param file file to be converted
+     * @return Element based on the file
+     */
     private static Element convertToFileElement(FileInfo file) {
         Element fileElement = new Element("file");
         Element nameElement = new Element("name");
@@ -128,10 +149,12 @@ public class Cache {
         ArrayList<Archive> archives = new ArrayList<Archive>();
         MessageDigest messageDigest;
         try {
+            // get filename
             messageDigest = MessageDigest.getInstance("MD5");
             byte[] hashBytes = messageDigest.digest(dir.getPath().getParent().toString().getBytes());
             String hash = FileInfo.getStringHash(hashBytes);
             String name = dir.getPath().getFileName().toString();
+
             File inputFile = Paths.get("Results").resolve(".cache").resolve(name + "_" + hash).toFile();
             if (!inputFile.exists()) {
                 FileInfo[][] ret = { (FileInfo[]) files.toArray(), (Archive[]) archives.toArray() };

@@ -13,8 +13,8 @@ import java.nio.file.Paths;
  * Directory info. Hold the files that it has and tracks statiscs. To know more
  * info: https://github.com/FlyingWolFox/Duplicate-Finder
  * 
- * @version 1.2
- * @author FlyingWolFox / lips.pissaia@gmail.com
+ * @version 1.3-beta
+ * @author FlyingWolFox
  */
 public class Directory {
     private ArrayList<FileInfo> files;
@@ -142,7 +142,6 @@ public class Directory {
             }
         }
 
-        
         System.out.println("");
         System.out.println("Opening " + path);
         ProgressBar bar = new ProgressBar("Hashing Files", filesPaths.size());
@@ -150,21 +149,20 @@ public class Directory {
             fileAditions.add(new FileInfo(file.toFile(), this));
             bar.update();
         }
-            
+
         bar = new ProgressBar("Hashing Archives", archivesPaths.size());
         for (Path archive : archivesPaths) {
             archiveAditions.add(new Archive(archive.toFile(), this));
             bar.update();
         }
-            
 
         files.addAll(fileCache);
         files.addAll(fileAditions);
         archives.addAll(archiveCache);
         archives.addAll(archiveAditions);
 
-        FileInfo[][] filesUpdate = {(FileInfo[]) fileAditions.toArray(), (FileInfo[]) fileDeletions.toArray()};
-        Archive [][] archivesUpdate = {(Archive[]) archiveAditions.toArray(), (Archive[]) archiveDeletions.toArray()};
+        FileInfo[][] filesUpdate = { (FileInfo[]) fileAditions.toArray(), (FileInfo[]) fileDeletions.toArray() };
+        Archive[][] archivesUpdate = { (Archive[]) archiveAditions.toArray(), (Archive[]) archiveDeletions.toArray() };
 
         Cache.updateCache(this, filesUpdate, archivesUpdate);
 
