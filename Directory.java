@@ -161,8 +161,8 @@ public class Directory {
         archives.addAll(archiveCache);
         archives.addAll(archiveAditions);
 
-        FileInfo[][] filesUpdate = { (FileInfo[]) fileAditions.toArray(), (FileInfo[]) fileDeletions.toArray() };
-        Archive[][] archivesUpdate = { (Archive[]) archiveAditions.toArray(), (Archive[]) archiveDeletions.toArray() };
+        FileInfo[][] filesUpdate = { fileAditions.toArray(new FileInfo[fileAditions.size()]), fileDeletions.toArray(new FileInfo[fileAditions.size()]) };
+        Archive[][] archivesUpdate = { archiveAditions.toArray(new Archive[archiveAditions.size()]), archiveDeletions.toArray(new Archive[archiveAditions.size()]) };
 
         Cache.updateCache(this, filesUpdate, archivesUpdate);
 

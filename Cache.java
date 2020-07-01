@@ -157,7 +157,8 @@ public class Cache {
 
             File inputFile = Paths.get("Results").resolve(".cache").resolve(name + "_" + hash).toFile();
             if (!inputFile.exists()) {
-                FileInfo[][] ret = { (FileInfo[]) files.toArray(), (Archive[]) archives.toArray() };
+                FileInfo[][] ret = { files.toArray(new FileInfo[files.size()]),
+                        archives.toArray(new Archive[archives.size()]) };
                 return ret;
             }
 
@@ -210,7 +211,8 @@ public class Cache {
 
         Collections.sort(files);
         Collections.sort(archives);
-        FileInfo[][] ret = { (FileInfo[]) files.toArray(), (Archive[]) archives.toArray() };
+        FileInfo[][] ret = { files.toArray(new FileInfo[files.size()]),
+                archives.toArray(new Archive[archives.size()]) };
         return ret;
     }
 
