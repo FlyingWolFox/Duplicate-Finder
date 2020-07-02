@@ -19,10 +19,10 @@ public class ProgressBar {
     }
 
     private void print(boolean end) {
-        int percentage;
-        int progress;
-        percentage = (int) (100 * (current / max));
-        progress = (50 * percentage) / 100;
+        long percentage;
+        long progress;
+        percentage = (long) (100 * ( (double) current / max));
+        progress = (long) (50 * (double) percentage) / 100;
         out.print("\r");
         out.print(taskName + " ");
         out.print(percentage + "% ");
