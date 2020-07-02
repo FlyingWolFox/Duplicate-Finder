@@ -11,6 +11,8 @@ public class ProgressBar {
     private String taskName;
     private long max;
     private long current;
+    private long oldPercentage;
+    private long oldProgress;
 
     public ProgressBar(String taskName, long maxValue) {
         this.taskName = taskName;
@@ -23,6 +25,10 @@ public class ProgressBar {
         long progress;
         percentage = (long) (100 * ( (double) current / max));
         progress = (long) (50 * (double) percentage) / 100;
+        if (percentage == oldPercentage && progress == oldProgress)
+            return;
+        oldPercentage = percentage;
+        oldProgress = progress;
         out.print("\r");
         out.print(taskName + " ");
         out.print(percentage + "% ");
