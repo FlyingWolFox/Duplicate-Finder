@@ -62,6 +62,8 @@ public class Cache {
             bar.update();
         }
 
+        dirElement.sortChildren(new FileElementComparator());
+
         // write cache
         try {
             // get the file name
@@ -165,8 +167,8 @@ public class Cache {
             SAXBuilder saxBuilder = new SAXBuilder();
             Document document = saxBuilder.build(inputFile);
             Element dirElement = document.getRootElement();
-            if (dirElement.getAttribute("path").getValue().equals(dir.getPath().toString())) {
-                System.out.println(inputFile.getName() + " isn't " + dirElement.getAttribute("path") + " cache file!");
+            if (!dirElement.getAttribute("path").getValue().equals(dir.getPath().toString())) {
+                System.out.println(inputFile.getName() + " isn't " + dirElement.getAttribute("path").getValue() + " cache file!");
             }
             List<Element> filesList = dirElement.getChildren("file");
             ProgressBar bar = new ProgressBar("Retrieving files", filesList.size());
@@ -236,13 +238,14 @@ public class Cache {
             File inputFile = Paths.get("Results").resolve(".cache").resolve(name + "_" + hash).toFile();
             if (!inputFile.exists()) {
                 createCache(dir);
+                // TODO: return;
             }
             ProgressBar bar = new ProgressBar("Updating cache", 3);
             SAXBuilder saxBuilder = new SAXBuilder();
             Document document = saxBuilder.build(inputFile);
             Element dirElement = document.getRootElement();
-            if (dirElement.getAttribute("path").getValue().equals(dir.getPath().toString())) {
-                System.out.println(inputFile.getName() + " isn't " + dirElement.getAttribute("path") + " cache file!");
+            if (!dirElement.getAttribute("path").getValue().equals(dir.getPath().toString())) {
+                System.out.println(inputFile.getName() + " isn't " + dirElement.getAttribute("path").getValue() + " cache file!");
             }
             for (FileInfo file : filesUpdate[1]) {
                 Element fileElement = convertToFileElement(file);
@@ -302,6 +305,7 @@ public class Cache {
 
 class FileElementComparator implements Comparator<Element> {
     public int compare(Element e1, Element e2) {
+        // TODO: comparing by hash?
         String name1 = e1.getChild("name").getText();
         String name2 = e2.getChild("name").getText();
 
