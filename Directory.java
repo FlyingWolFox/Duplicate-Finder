@@ -82,9 +82,12 @@ public class Directory {
                 fileAditions.add(file);
             }
         }
+        ProgressBar bar = new ProgressBar("Hashing old file cache entries", fileAditions.size());
         fileCache.removeAll(fileDeletions);
-        for (int i = 0; i < fileAditions.size(); i++)
+        for (int i = 0; i < fileAditions.size(); i++) {            
             fileAditions.set(i, new FileInfo(fileAditions.get(i).getFile(), this));
+            bar.update();
+        }
         fileCache.addAll(fileAditions);
 
         for (Archive archive : archiveCache) {
@@ -96,10 +99,13 @@ public class Directory {
                 archiveAditions.add(archive);
             }
         }
+        bar = new ProgressBar("Hashing old archive cache entries", archiveAditions.size());
         archiveCache.removeAll(archiveDeletions);
-        for (int i = 0; i < archiveAditions.size(); i++)
+        for (int i = 0; i < archiveAditions.size(); i++) {
             archiveAditions.set(i, new Archive(archiveAditions.get(i).getFile(), this));
-        fileCache.addAll(archiveAditions);
+            bar.update();
+        }
+        archiveCache.addAll(archiveAditions);
 
         ArrayList<Path> filesPaths = new ArrayList<Path>();
         for (FileInfo file : fileCache)
@@ -144,7 +150,7 @@ public class Directory {
 
         System.out.println("");
         System.out.println("Opening " + path);
-        ProgressBar bar = new ProgressBar("Hashing Files", filesPaths.size());
+        bar = new ProgressBar("Hashing Files", filesPaths.size());
         for (Path file : filesPaths) {
             fileAditions.add(new FileInfo(file.toFile(), this));
             bar.update();
