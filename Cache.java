@@ -305,7 +305,6 @@ public class Cache {
 
 class FileElementComparator implements Comparator<Element> {
     public int compare(Element e1, Element e2) {
-        // TODO: comparing by hash?
         String name1 = e1.getChild("name").getText();
         String name2 = e2.getChild("name").getText();
 
