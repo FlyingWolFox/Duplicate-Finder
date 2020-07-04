@@ -77,7 +77,7 @@ public class Directory {
             if (!file.getFile().exists())
                 fileDeletions.add(file);
 
-            if (String.valueOf(file.getFile().lastModified()).equals(file.getLastModified())) {
+            if (!String.valueOf(file.getFile().lastModified()).equals(file.getLastModified())) {
                 fileDeletions.add(file);
                 fileAditions.add(file);
             }
@@ -94,7 +94,7 @@ public class Directory {
             if (!archive.getFile().exists())
                 archiveDeletions.add(archive);
 
-            if (String.valueOf(archive.getFile().lastModified()).equals(archive.getLastModified())) {
+            if (!String.valueOf(archive.getFile().lastModified()).equals(archive.getLastModified())) {
                 archiveDeletions.add(archive);
                 archiveAditions.add(archive);
             }
