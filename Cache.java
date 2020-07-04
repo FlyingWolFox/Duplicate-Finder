@@ -261,8 +261,8 @@ public class Cache {
                 String name1 = children.get(i).getChild("name").toString();
                 String name2 = children.get(i + 1).getChild("name").toString();
                 if (name1.equals(name2)) {
-                    children.remove(i);
                     children.remove(i + 1);
+                    children.remove(i);
                     i--;
                 }
             }

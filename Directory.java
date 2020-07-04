@@ -65,8 +65,8 @@ public class Directory {
         files = new ArrayList<FileInfo>();
         archives = new ArrayList<Archive>();
         FileInfo[][] cache = Cache.getCache(this);
-        List<FileInfo> fileCache = Arrays.asList(cache[0]);
-        List<Archive> archiveCache = Arrays.asList((Archive[]) cache[1]);
+        List<FileInfo> fileCache = new ArrayList<FileInfo>(Arrays.asList(cache[0]));
+        List<Archive> archiveCache = new ArrayList<Archive>(Arrays.asList((Archive[]) cache[1]));
         ArrayList<FileInfo> fileDeletions = new ArrayList<FileInfo>();
         ArrayList<FileInfo> fileAditions = new ArrayList<FileInfo>();
         ArrayList<Archive> archiveDeletions = new ArrayList<Archive>();
@@ -98,7 +98,7 @@ public class Directory {
         }
         archiveCache.removeAll(archiveDeletions);
         for (int i = 0; i < archiveAditions.size(); i++)
-            archiveAditions.set(i, new Archive(archives.get(i).getFile(), this));
+            archiveAditions.set(i, new Archive(archiveAditions.get(i).getFile(), this));
         fileCache.addAll(archiveAditions);
 
         ArrayList<Path> filesPaths = new ArrayList<Path>();
@@ -126,8 +126,8 @@ public class Directory {
             String name1 = filesPaths.get(i).getFileName().toString();
             String name2 = filesPaths.get(i + 1).getFileName().toString();
             if (name1.equals(name2)) {
-                filesPaths.remove(i);
                 filesPaths.remove(i + 1);
+                filesPaths.remove(i);
                 i--;
             }
         }
@@ -136,8 +136,8 @@ public class Directory {
             String name1 = archivesPaths.get(i).getFileName().toString();
             String name2 = archivesPaths.get(i + 1).getFileName().toString();
             if (name1.equals(name2)) {
-                archivesPaths.remove(i);
                 archivesPaths.remove(i + 1);
+                archivesPaths.remove(i);
                 i--;
             }
         }
@@ -161,8 +161,8 @@ public class Directory {
         archives.addAll(archiveCache);
         archives.addAll(archiveAditions);
 
-        FileInfo[][] filesUpdate = { fileAditions.toArray(new FileInfo[fileAditions.size()]), fileDeletions.toArray(new FileInfo[fileAditions.size()]) };
-        Archive[][] archivesUpdate = { archiveAditions.toArray(new Archive[archiveAditions.size()]), archiveDeletions.toArray(new Archive[archiveAditions.size()]) };
+        FileInfo[][] filesUpdate = { fileAditions.toArray(new FileInfo[fileAditions.size()]), fileDeletions.toArray(new FileInfo[fileDeletions.size()]) };
+        Archive[][] archivesUpdate = { archiveAditions.toArray(new Archive[archiveAditions.size()]), archiveDeletions.toArray(new Archive[archiveDeletions.size()]) };
 
         Cache.updateCache(this, filesUpdate, archivesUpdate);
 
