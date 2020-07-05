@@ -228,9 +228,9 @@ public class Cache {
      *                       archivesUpdate[1][] is archive removals
      */
     public static void updateCache(Directory dir, FileInfo[][] filesUpdate, Archive[][] archivesUpdate) {
+        // Even if the cache file doesn't exists, nothing should break
         MessageDigest messageDigest;
         try {
-            // Even if the cache file doesn't exists, nothing should break
             messageDigest = MessageDigest.getInstance("MD5");
             byte[] hashBytes = messageDigest.digest(dir.getPath().getParent().toString().getBytes());
             String hash = FileInfo.getStringHash(hashBytes);
@@ -238,7 +238,7 @@ public class Cache {
             File inputFile = Paths.get("Results").resolve(".cache").resolve(name + "_" + hash).toFile();
             if (!inputFile.exists()) {
                 createCache(dir);
-                // TODO: return;
+                return;
             }
             ProgressBar bar = new ProgressBar("Updating cache", 3);
             SAXBuilder saxBuilder = new SAXBuilder();
