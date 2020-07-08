@@ -10,6 +10,7 @@
 <classPath>DuplicateFinder.jar</classPath>
 <classPath>7-Zip-JBinding\sevenzipjbinding.jar</classPath>
 <classPath>7-Zip-JBinding\sevenzipjbinding-AllPlatforms.jar</classPath>
+<classPath>jdom-2.0.6\jdom-2.0.6.jar</classPath>
 <embeddedJar>false</embeddedJar>
 <executableName>DuplicateFinder.exe</executableName>
 <initialMemoryHeap>-1</initialMemoryHeap>

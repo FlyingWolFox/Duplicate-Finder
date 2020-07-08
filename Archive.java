@@ -1,6 +1,7 @@
 import java.io.File;
 import java.io.IOException;
 import java.io.RandomAccessFile;
+import java.nio.file.Path;
 import java.security.MessageDigest;
 import java.security.NoSuchAlgorithmException;
 import java.util.ArrayList;
@@ -22,8 +23,8 @@ import net.sf.sevenzipjbinding.impl.RandomAccessFileInStream;
  * Supports every format that can be decompressed by 7zip. However, the span of
  * formats is the most common ones. See isArchive() method for details
  * 
- * @version 1.2
- * @author FlyingWolFox / lips.pissaia@gmail.com
+ * @version 1.3
+ * @author FlyingWolFox
  */
 public class Archive extends FileInfo {
     private ArrayList<String> hashes;
@@ -35,8 +36,13 @@ public class Archive extends FileInfo {
             calculateHashes();
         } catch (IOException e) {
             System.out.println(":...: > Error trying to get hashes for the archive " + super.getFile().getAbsolutePath()
-                    + ": " + e);
+                    + ":> " + e);
         }
+    }
+
+    public Archive(Path path, String hash, ArrayList<String> hashes, String lastModified, Directory dir) {
+        super(path, hash, lastModified, dir);
+        this.hashes = hashes;
     }
 
     /**
@@ -99,7 +105,7 @@ public class Archive extends FileInfo {
      * http://sevenzipjbind.sourceforge.net/extraction_snippets.html
      */
     public static class MyExtractCallback implements IArchiveExtractCallback {
-        private int index;
+        //private int index;
         private boolean skipExtraction;
         private IInArchive inArchive;
         private static MessageDigest digest;
@@ -116,7 +122,7 @@ public class Archive extends FileInfo {
         }
 
         public ISequentialOutStream getStream(int index, ExtractAskMode extractAskMode) throws SevenZipException {
-            this.index = index;
+            //this.index = index;
             skipExtraction = (Boolean) inArchive.getProperty(index, PropID.IS_FOLDER);
             if (skipExtraction || extractAskMode != ExtractAskMode.EXTRACT) {
                 return null;
@@ -139,7 +145,8 @@ public class Archive extends FileInfo {
             if (extractOperationResult != ExtractOperationResult.OK) {
                 System.err.println(":..: > Extraction error");
             } else {
-                System.out.println(String.format(":.. :.. %s [OK]", inArchive.getProperty(index, PropID.PATH)));
+                // System.out.println(String.format(":.. :.. %s [OK]",
+                // inArchive.getProperty(index, PropID.PATH)));
                 digests.add(digest.digest());
             }
         }
