@@ -33,8 +33,10 @@ public class Directory {
      * 
      * @param path path to the directory
      * @throws IOException if there was an error opening the directory
+     * @deprecated
+     * @see Directory(String path)
      */
-    public Directory(String path, String no) throws IOException {
+    public Directory(String path, String deprecated) throws IOException {
         num = x; // gets dir id
         this.path = Paths.get(path);
         files = new ArrayList<FileInfo>();
