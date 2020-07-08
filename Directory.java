@@ -84,7 +84,7 @@ public class Directory {
         }
         ProgressBar bar = new ProgressBar("Hashing old file cache entries", fileAditions.size());
         fileCache.removeAll(fileDeletions);
-        for (int i = 0; i < fileAditions.size(); i++) {            
+        for (int i = 0; i < fileAditions.size(); i++) {
             fileAditions.set(i, new FileInfo(fileAditions.get(i).getFile(), this));
             bar.update();
         }
@@ -166,10 +166,11 @@ public class Directory {
         files.addAll(fileAditions);
         archives.addAll(archiveCache);
         archives.addAll(archiveAditions);
-        
-        
-        FileInfo[][] filesUpdate = { fileAditions.toArray(new FileInfo[fileAditions.size()]), fileDeletions.toArray(new FileInfo[fileDeletions.size()]) };
-        Archive[][] archivesUpdate = { archiveAditions.toArray(new Archive[archiveAditions.size()]), archiveDeletions.toArray(new Archive[archiveDeletions.size()]) };
+
+        FileInfo[][] filesUpdate = { fileAditions.toArray(new FileInfo[fileAditions.size()]),
+                fileDeletions.toArray(new FileInfo[fileDeletions.size()]) };
+        Archive[][] archivesUpdate = { archiveAditions.toArray(new Archive[archiveAditions.size()]),
+                archiveDeletions.toArray(new Archive[archiveDeletions.size()]) };
 
         Cache.updateCache(this, filesUpdate, archivesUpdate);
 

@@ -168,7 +168,8 @@ public class Cache {
             Document document = saxBuilder.build(inputFile);
             Element dirElement = document.getRootElement();
             if (!dirElement.getAttribute("path").getValue().equals(dir.getPath().toString())) {
-                System.out.println(inputFile.getName() + " isn't " + dirElement.getAttribute("path").getValue() + " cache file!");
+                System.out.println(
+                        inputFile.getName() + " isn't " + dirElement.getAttribute("path").getValue() + " cache file!");
             }
             List<Element> filesList = dirElement.getChildren("file");
             ProgressBar bar = new ProgressBar("Retrieving files", filesList.size());
@@ -245,7 +246,8 @@ public class Cache {
             Document document = saxBuilder.build(inputFile);
             Element dirElement = document.getRootElement();
             if (!dirElement.getAttribute("path").getValue().equals(dir.getPath().toString())) {
-                System.out.println(inputFile.getName() + " isn't " + dirElement.getAttribute("path").getValue() + " cache file!");
+                System.out.println(
+                        inputFile.getName() + " isn't " + dirElement.getAttribute("path").getValue() + " cache file!");
             }
             for (FileInfo file : filesUpdate[1]) {
                 Element fileElement = convertToFileElement(file);

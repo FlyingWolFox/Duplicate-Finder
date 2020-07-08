@@ -23,7 +23,7 @@ public class ProgressBar {
     private void print(boolean end) {
         long percentage;
         long progress;
-        percentage = (long) (100 * ( (double) current / max));
+        percentage = (long) (100 * ((double) current / max));
         progress = (long) (50 * (double) percentage) / 100;
         if (percentage == oldPercentage && progress == oldProgress)
             return;
