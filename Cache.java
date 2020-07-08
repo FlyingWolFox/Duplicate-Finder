@@ -26,7 +26,7 @@ import java.security.NoSuchAlgorithmException;
  * https://github.com/FlyingWolFox/Duplicate-Finder
  * 
  * @author FlyingWolFox
- * @version 1.0-beta
+ * @version 1.0
  */
 public class Cache {
     /**

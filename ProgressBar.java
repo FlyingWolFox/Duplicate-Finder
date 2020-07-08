@@ -5,7 +5,7 @@ import static java.lang.System.out;
  * https://github.com/FlyingWolFox/Duplicate-Finder
  * 
  * @author FlyingWolFox
- * @version 1.0-beta
+ * @version 1.0
  */
 public class ProgressBar {
     private String taskName;

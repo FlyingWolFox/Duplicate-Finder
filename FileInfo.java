@@ -10,7 +10,7 @@ import java.security.NoSuchAlgorithmException;
  * A file. Responsible to calculate hash. To know more info:
  * https://github.com/FlyingWolFox/Duplicate-Finder
  * 
- * @version 1.3-beta
+ * @version 1.3
  * @author FlyingWolFox
  */
 public class FileInfo implements Comparable<FileInfo> {

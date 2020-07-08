@@ -13,7 +13,7 @@ import java.nio.file.Paths;
  * Directory info. Hold the files that it has and tracks statiscs. To know more
  * info: https://github.com/FlyingWolFox/Duplicate-Finder
  * 
- * @version 1.3-beta
+ * @version 1.3
  * @author FlyingWolFox
  */
 public class Directory {

@@ -23,7 +23,7 @@ import net.sf.sevenzipjbinding.impl.RandomAccessFileInStream;
  * Supports every format that can be decompressed by 7zip. However, the span of
  * formats is the most common ones. See isArchive() method for details
  * 
- * @version 1.3-beta
+ * @version 1.3
  * @author FlyingWolFox
  */
 public class Archive extends FileInfo {
@@ -105,7 +105,7 @@ public class Archive extends FileInfo {
      * http://sevenzipjbind.sourceforge.net/extraction_snippets.html
      */
     public static class MyExtractCallback implements IArchiveExtractCallback {
-        private int index;
+        //private int index;
         private boolean skipExtraction;
         private IInArchive inArchive;
         private static MessageDigest digest;
@@ -122,7 +122,7 @@ public class Archive extends FileInfo {
         }
 
         public ISequentialOutStream getStream(int index, ExtractAskMode extractAskMode) throws SevenZipException {
-            this.index = index;
+            //this.index = index;
             skipExtraction = (Boolean) inArchive.getProperty(index, PropID.IS_FOLDER);
             if (skipExtraction || extractAskMode != ExtractAskMode.EXTRACT) {
                 return null;
