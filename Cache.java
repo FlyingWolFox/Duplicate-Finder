@@ -75,7 +75,7 @@ public class Cache {
             Path cacheDir = Paths.get("Results").resolve(".cache");
             Files.createDirectories(cacheDir);
             XMLOutputter xmlOutput = new XMLOutputter();
-            FileOutputStream outuputFile = new FileOutputStream(cacheDir.resolve(name + "_" + hash).toFile());
+            FileOutputStream outuputFile = new FileOutputStream(cacheDir.resolve(name + "_" + hash + ".xml").toFile());
             xmlOutput.setFormat(Format.getPrettyFormat());
             xmlOutput.output(doc, outuputFile);
             outuputFile.close();
@@ -157,7 +157,7 @@ public class Cache {
             String hash = FileInfo.getStringHash(hashBytes);
             String name = dir.getPath().getFileName().toString();
 
-            File inputFile = Paths.get("Results").resolve(".cache").resolve(name + "_" + hash).toFile();
+            File inputFile = Paths.get("Results").resolve(".cache").resolve(name + "_" + hash + ".xml").toFile();
             if (!inputFile.exists()) {
                 FileInfo[][] ret = { files.toArray(new FileInfo[files.size()]),
                         archives.toArray(new Archive[archives.size()]) };
@@ -236,7 +236,7 @@ public class Cache {
             byte[] hashBytes = messageDigest.digest(dir.getPath().getParent().toString().getBytes());
             String hash = FileInfo.getStringHash(hashBytes);
             String name = dir.getPath().getFileName().toString();
-            File inputFile = Paths.get("Results").resolve(".cache").resolve(name + "_" + hash).toFile();
+            File inputFile = Paths.get("Results").resolve(".cache").resolve(name + "_" + hash + ".xml").toFile();
             if (!inputFile.exists()) {
                 createCache(dir);
                 return;
