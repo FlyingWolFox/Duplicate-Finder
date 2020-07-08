@@ -1,6 +1,6 @@
 # Duplicate Finder
 
-Duplicate finder is a tool (like a script) that will serach for repetions on directories given by argument using MD5 hash. It'll scan files and archives (but not subdirectories). Archives with more than one file are compared with others of the same kind. Other files and archives with one file are compared toghter. In this case the archive will be compared based on the file inside. Needs [7-Zip-JBinding](http://sevenzipjbind.sourceforge.net/index.html)
+Duplicate finder is a tool (like a script) that will serach for repetions on directories given by argument using MD5 hash. It'll scan files and archives (but not subdirectories). Archives with more than one file are compared with others of the same kind. Other files and archives with one file are compared toghter. In this case the archive will be compared based on the file inside. The filename, its hash(es) and last modified date is cached for better speed. Needs [7-Zip-JBinding](http://sevenzipjbind.sourceforge.net/index.html) and [JDOM 2.0.6](http://www.jdom.org/)
 This tool uses the terminal to operate and the windows executable is wrapped by JSmooth.
 
 ## How to use
@@ -9,7 +9,7 @@ This tool uses the terminal to operate and the windows executable is wrapped by 
 
 * Using the .class or .jar:
 
-  - Call the Main class and pass the directories that you want to analyze as arguments. The tool ignores subdirectories. The tool will print in the terminal what files it's analizing and, after done, will print the results:
+  - Call the Main class and pass the directories that you want to analyze as arguments. The tool ignores subdirectories. The tool will print a progress bar showing the progress, after done, will print the results:
     - 1. Internal repetions: Internal repetions are files that have a equal copy in the same directory that they're in. The tool will show if it found at least a repetion and, if it does, will print how many are in each and end execution. You'll have to handle them yourself and then re-run the script.
     - 2. Repetions: Here enters repetions among directories. The tool will print how many repetions were found on each directory.
     - 3. The tool will print `Operation Complete` after the execution. If any exceptions are raised while handling, the description of the error will be printed with the stack trace.
@@ -34,13 +34,17 @@ The `Results` directory will have a number of subdriectories in it, the same num
 
 PS: Intenal repetions are handle first. If the tool finds, it won't look for repetions among directories. Internal repetions are put in the subdirectories which they're found. Manage them first, them re-run the tool to look for repetions among directories
 
+### The cache and .cache directory
+
+The tool will cache all directories that are analyzed, storing name, hash (also hashes for archive) and last modified date. It helps speedup the analysis process. All cache entries are validatied on run. If a file was modified, it'll be rehashed and have its cache entry updated.The `Results` directory will have a `.cache` directory that will have inside `.xml` files. Those are the cache for the directories scanned.
+
 ### How it works
 
-First the tool get all files and archives in the directories passed by argument. Archives are decompressed and their files' hash calculated and files common files also have their hash calculated. Archives with only one file are treated as a normal file. After that it'll look for internal repetions in the directories, comparing archives separately from the files and archives with only one file. After that it'll search for repetion among directories, with archives being treated separately. To do both of things, files and archives are sorted by their hashes, with this, files and archives with the same hash will be togheter in the list. When it finds a repetion, it'll move all repeated files, renaming them in the process.
+First the tool get all files and archives in the directories passed by argument. The directories files will have their hashes calculated and archives are decompressed and their files' hash calculated. Archives with only one file are treated as a normal file. After that it'll look for internal repetions in the directories, comparing archives separately from the files. Archives with a single file are treated like a common file. After that it'll search for repetion among directories, with archives being treated separately. To do both of things, files and archives are sorted by their hashes, with this, files and archives with the same hash will be togheter in the list. When it finds a repetion, it'll move all repeated files, renaming them in the process.
 
 ## About the code
 
-This tool uses MD5 hash to verify if files are equal and uses `java.nio` and `java.security`. Not all of these are available in all Java versions, like Java ME or old version of Java. PS: The hash calculations were optimized after Java 7, so they run much faster. Also, this tool needs 7-Zip-JBinding library to handle archives, you can get it [here](http://sevenzipjbind.sourceforge.net/index.html)
+This tool uses MD5 hash to verify if files are equal and uses `java.nio` and `java.security`. Not all of these are available in all Java versions, like Java ME or old version of Java. PS: The hash calculations were optimized after Java 7, so they run much faster. Also, this tool needs 7-Zip-JBinding library to handle archives, you can get it [here](http://sevenzipjbind.sourceforge.net/index.html), and JDOM to generate and read cache, you can get it [here](http://www.jdom.org/).
 
 ## FAQ
 
@@ -78,7 +82,15 @@ This tool uses MD5 hash to verify if files are equal and uses `java.nio` and `ja
 
    The min is one, in which it'll just look for internal repetions, the max is designed to be 26, after that the tool will raise an exception (error) or will stop to put letters in the filenames in the 27th and beyond directories
 
-9. **I've found taht something is going wrong, how can I help/get a solution?**
+9. **The cache will be update if the files are?**
+
+   Yes, the tool will check if the cache is valid, using the last modified date
+
+10. **Can I delete the cache?**
+
+   Yes. The cache will be regenerated on the next run
+
+11. **I've found that something is going wrong, how can I help/get a solution?**
 
    You can always create an Issue to help improve this tool. I just ask you to look at all issues to see if your questions/problem hasn't been answered/solved
 
