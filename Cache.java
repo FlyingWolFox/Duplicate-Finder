@@ -111,7 +111,7 @@ public class Cache {
         }
         Element hashElement = new Element("hash");
         hashElement.setText(archive.getHash());
-        lastModifiedElement.setText(String.valueOf(archive.getFile().lastModified()));
+        lastModifiedElement.setText(archive.getLastModified());
         archiveElement.addContent(nameElement);
         archiveElement.addContent(hashElement);
         archiveElement.addContent(hashesElement);
@@ -185,7 +185,7 @@ public class Cache {
                 String fileName = archiveElement.getChild("name").getText();
                 String fileHash = archiveElement.getChild("hash").getText();
                 ArrayList<String> archiveHashes = new ArrayList<String>();
-                for (Element hashElement : archiveElement.getChild("hash").getChildren("hash")) {
+                for (Element hashElement : archiveElement.getChild("hashes").getChildren("hash")) {
                     archiveHashes.add(hashElement.getText());
                 }
                 String fileLastModified = archiveElement.getChild("last_modified").getText();
@@ -258,8 +258,8 @@ public class Cache {
             dirElement.sortChildren(new FileElementComparator());
             List<Element> children = dirElement.getChildren();
             for (int i = 0; i < children.size() - 1; i++) {
-                String name1 = children.get(i).getChild("name").toString();
-                String name2 = children.get(i + 1).getChild("name").toString();
+                String name1 = children.get(i).getChild("name").getText();
+                String name2 = children.get(i + 1).getChild("name").getText();
                 if (name1.equals(name2)) {
                     children.remove(i + 1);
                     children.remove(i);
