@@ -166,14 +166,18 @@ public class Directory {
         files.addAll(fileAditions);
         archives.addAll(archiveCache);
         archives.addAll(archiveAditions);
-
+        
+        
         FileInfo[][] filesUpdate = { fileAditions.toArray(new FileInfo[fileAditions.size()]), fileDeletions.toArray(new FileInfo[fileDeletions.size()]) };
         Archive[][] archivesUpdate = { archiveAditions.toArray(new Archive[archiveAditions.size()]), archiveDeletions.toArray(new Archive[archiveDeletions.size()]) };
 
         Cache.updateCache(this, filesUpdate, archivesUpdate);
 
-        System.out.println("");
-        System.out.println("Opening " + path);
+        trasnformSingleFileArchives();
+        Collections.sort(files); // sorts based on hash
+        if (archives.size() != 0)
+            Collections.sort(archives, archives.get(0).new ArchiveComparator());
+        x++;
     }
 
     /**
