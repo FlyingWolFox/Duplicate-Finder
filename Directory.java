@@ -79,7 +79,7 @@ public class Directory {
             if (!file.getFile().exists())
                 fileDeletions.add(file);
 
-            if (!String.valueOf(file.getFile().lastModified()).equals(file.getLastModified())) {
+            else if (!String.valueOf(file.getFile().lastModified()).equals(file.getLastModified())) {
                 fileDeletions.add(file);
                 fileAditions.add(file);
             }
