@@ -96,7 +96,7 @@ public class Directory {
             if (!archive.getFile().exists())
                 archiveDeletions.add(archive);
 
-            if (!String.valueOf(archive.getFile().lastModified()).equals(archive.getLastModified())) {
+            else if (!String.valueOf(archive.getFile().lastModified()).equals(archive.getLastModified())) {
                 archiveDeletions.add(archive);
                 archiveAditions.add(archive);
             }
