@@ -33,7 +33,7 @@ public class Directory {
      * 
      * @param path path to the directory
      * @throws IOException if there was an error opening the directory
-     * @deprecated
+     * @Deprecated
      * @see Directory(String path)
      */
     public Directory(String path, String deprecated) throws IOException {
